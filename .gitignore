@@ -127,3 +127,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+swarmdjango/secrets.json
+swarmpostgres/env.list
