@@ -3,9 +3,6 @@
 #make network if not already made
 docker network create --driver=bridge --subnet=192.168.10.0/25 --gateway 192.168.10.1 swarm-net
 
-#create the network bridge
-sh createNetwork.sh
-
 #build postgres container
 cd swarmpostgres
 sh dockerUpDb.sh
