@@ -5,7 +5,6 @@ from core.models import Change
 from core.models import Heading
 from core.models import Comment
 
-
 class Entry(models.Model):
     title = models.TextField()
     text = models.TextField()
