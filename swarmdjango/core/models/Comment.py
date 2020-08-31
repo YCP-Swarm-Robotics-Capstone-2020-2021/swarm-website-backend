@@ -1,8 +1,9 @@
 from django.db import models
 
+from core.models import User
+
 class Comment(models.Model):
-    #TODO:
-    #userId
+    user = models.OneToOneField('User', on_delete=models.CASCADE, blank=True)
     text = models.TextField()
     dateTime = models.DateTimeField(auto_now_add = True)
     replies = models.ManyToManyField('self')

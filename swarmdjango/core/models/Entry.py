@@ -4,13 +4,13 @@ from core.models import SideBar
 from core.models import Change
 from core.models import Heading
 from core.models import Comment
+from core.models import User
 
 class Entry(models.Model):
     title = models.TextField()
     text = models.TextField()
     sideBar = models.OneToOneField('SideBar', on_delete=models.CASCADE)
-    #TODO:
-    #contributors
+    contributors = models.ManyToManyField('User')
     headings = models.ManyToManyField('Heading')
     comments = models.ManyToManyField('Comment')
     log = models.ManyToManyField('Change')

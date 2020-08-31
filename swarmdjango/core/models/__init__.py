@@ -9,3 +9,8 @@ from .Heading import Heading
 from .Comment import Comment
 from .SideBar import SideBar
 from .Change import Change
+
+from .User import User
+from .Sponsor import Sponsor
+from .Developer import Developer
+from .Admin import Admin
