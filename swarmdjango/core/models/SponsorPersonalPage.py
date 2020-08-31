@@ -5,4 +5,4 @@ from core.models import PersonalPage
 class SponsorPersonalPage(PersonalPage):
     missionStatement = models.TextField()
     reasonForSponsorship = models.TextField()
-    companyLink = models.TextField()
+    companyLink = models.URLField()
