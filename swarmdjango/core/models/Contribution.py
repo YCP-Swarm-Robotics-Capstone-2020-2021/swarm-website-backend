@@ -2,5 +2,5 @@ from django.db import models
 
 class Contribution(models.Model):
     link = models.TextField()
-    descriptions = models.TextField()
+    description = models.TextField()
     fileName = models.TextField()

@@ -1,8 +1,9 @@
 from django.db import models
 
 from core.models import Contribution
+from core.models import PersonalPage
 
-class DevPersonalPage(models.Model):
+class DevPersonalPage(PersonalPage):
     expectedGraduationYear = models.IntegerField()
     biography = models.TextField()
     motivationForWorking = models.TextField()
