@@ -14,3 +14,5 @@ from .User import User
 from .Sponsor import Sponsor
 from .Developer import Developer
 from .Admin import Admin
+
+from .PhotoGallery import PhotoGallery
