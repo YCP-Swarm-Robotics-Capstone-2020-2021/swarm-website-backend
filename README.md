@@ -6,7 +6,7 @@
 sh dockerUpBackend.sh
 
 ## coverage lib commands
-######all commands run in django container  
+#####all commands run in django container  
 run after any code addition: ```coverage run --source='.' manage.py test```  
 then run ```compare report``` or ```compare html``` to get report 
 - The former will simply show report in the terminal
