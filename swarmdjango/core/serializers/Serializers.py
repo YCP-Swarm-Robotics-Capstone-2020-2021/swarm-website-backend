@@ -22,7 +22,7 @@ from core.models import Wiki
 class AdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = Admin
-        fields = 'recieveUpdates'
+        fields = 'receiveUpdates'
 
 
 # Change serializer
@@ -43,21 +43,57 @@ class CommentSerializer(serializers.ModelSerializer):
 class ContributionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contribution
+        fields = ('link', 'description', 'fileName')
 
 
 # Developer serializer
+class DeveloperSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Developer
+        fields = ('teamRole', 'page')
+
 
 # DevPersonalPage serializer
+class DevPersonalPageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DevPersonalPage
+        fields = ('expectedGraduationYear', 'biography', 'motivationForWorking', 'contributions')
+
 
 # Entry serializer
+class EntrySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Entry
+        fields = ('title', 'text', 'sideBar', 'contributors', 'headings', 'comments', 'log')
+
 
 # Heading serializer
+class HeadingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Heading
+        fields = ('title', 'text', 'subHeadings', 'log')
+
 
 # PersonalPage serializer
+class PersonalPageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PersonalPage
+        fields = ('pageType', 'pageTitle')
+
 
 # PhotoGallery serializer
+class PhotoGallerySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PhotoGallery
+        fields = ('fileName', 'caption', 'uploadedBy')
+
 
 # SideBar serializer
+class SideBarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SideBar
+        fields = 'content'
+
 
 # Sponsor serializer
 class SponsorSerializer(serializers.ModelSerializer):
@@ -65,7 +101,12 @@ class SponsorSerializer(serializers.ModelSerializer):
         model = Sponsor
         fields = ('companyName', 'page')
 
+
 # SponsorPersonalPage serializer
+class SponsorPersonalPageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SponsorPersonalPage
+        fields = ('missionStatement', 'reasonForSponsorShip', 'companyLink')
 
 
 # User serializer
@@ -80,8 +121,3 @@ class WikiSerializer(serializers.ModelSerializer):
     class Meta:
         model = Wiki
         fields = ('title', 'entries', 'briefDescription')
-
-
-
-
-
