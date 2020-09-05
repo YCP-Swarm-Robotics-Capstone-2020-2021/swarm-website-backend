@@ -22,6 +22,7 @@ from core.models import Wiki
 class AdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = Admin
+        # Fields needs to be either a list or a tuple, so since it's a single item it must be a list
         fields = ['receiveUpdates']
 
 
@@ -92,6 +93,7 @@ class PhotoGallerySerializer(serializers.ModelSerializer):
 class SideBarSerializer(serializers.ModelSerializer):
     class Meta:
         model = SideBar
+        # Fields needs to be either a list or a tuple, so since it's a single item it must be a list
         fields = ['content']
 
 
