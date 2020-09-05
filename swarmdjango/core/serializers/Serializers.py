@@ -22,7 +22,7 @@ from core.models import Wiki
 class AdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = Admin
-        fields = 'receiveUpdates'
+        fields = ['receiveUpdates']
 
 
 # Change serializer
@@ -92,7 +92,7 @@ class PhotoGallerySerializer(serializers.ModelSerializer):
 class SideBarSerializer(serializers.ModelSerializer):
     class Meta:
         model = SideBar
-        fields = 'content'
+        fields = ['content']
 
 
 # Sponsor serializer
