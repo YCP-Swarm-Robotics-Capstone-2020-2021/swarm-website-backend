@@ -8,4 +8,4 @@ class Log(models.Model):
     dateTime = models.DateTimeField()
     #robot = models.OneToOneField('Robot', on_delete=models.CASCADE)
     #run = models.OneToOneField('Run', on_delete=models.CASCADE)
-    log = models.JSONField()
+    log = JSONField()
