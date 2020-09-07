@@ -21,7 +21,6 @@ from core.models import User
 from core.models import Wiki
 
 
-
 # Admin serializer
 class AdminSerializer(serializers.ModelSerializer):
     class Meta:
@@ -105,7 +104,7 @@ class RunSerializer(serializers.ModelSerializer):
         model = Run
         fields = ('dateTime', 'robots')
 
-        
+
 # PhotoGallery serializer
 class PhotoGallerySerializer(serializers.ModelSerializer):
     class Meta:
