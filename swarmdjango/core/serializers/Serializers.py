@@ -9,13 +9,17 @@ from core.models import Developer
 from core.models import DevPersonalPage
 from core.models import Entry
 from core.models import Heading
+from core.models import Log
 from core.models import PersonalPage
+from core.models import Robot
+from core.models import Run
 from core.models import PhotoGallery
 from core.models import SideBar
 from core.models import Sponsor
 from core.models import SponsorPersonalPage
 from core.models import User
 from core.models import Wiki
+
 
 
 # Admin serializer
@@ -74,6 +78,13 @@ class HeadingSerializer(serializers.ModelSerializer):
         fields = ('title', 'text', 'subHeadings', 'log')
 
 
+# Log Serializer
+class LogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Log
+        fields = ('dateTime', 'robot', 'run', 'log')
+
+
 # PersonalPage serializer
 class PersonalPageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -81,6 +92,20 @@ class PersonalPageSerializer(serializers.ModelSerializer):
         fields = ('pageType', 'pageTitle')
 
 
+# Robot Serializer
+class RobotSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Robot
+        fields = ('name', 'ip')
+
+
+# Run Serializer
+class RunSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Run
+        fields = ('dateTime', 'robots')
+
+        
 # PhotoGallery serializer
 class PhotoGallerySerializer(serializers.ModelSerializer):
     class Meta:
