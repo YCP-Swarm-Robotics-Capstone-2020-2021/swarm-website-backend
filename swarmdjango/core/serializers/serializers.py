@@ -25,7 +25,8 @@ from core.models import Wiki
 class AdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = Admin
-        fields = 'receiveUpdates'
+        # Fields needs to be either a list or a tuple, so since it's a single item it must be a list
+        fields = ['receiveUpdates']
 
 
 # Change serializer
@@ -116,7 +117,8 @@ class PhotoGallerySerializer(serializers.ModelSerializer):
 class SideBarSerializer(serializers.ModelSerializer):
     class Meta:
         model = SideBar
-        fields = 'content'
+        # Fields needs to be either a list or a tuple, so since it's a single item it must be a list
+        fields = ['content']
 
 
 # Sponsor serializer
