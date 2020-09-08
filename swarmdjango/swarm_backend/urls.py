@@ -19,9 +19,10 @@ from rest_framework import routers
 from core.views import userViewSet
 
 router = routers.DefaultRouter()
-router.register(r'users', userViewSet, basename='User')
+router.register('user', userViewSet.UserViewSet, basename='user')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('user/', include('rest_framework.urls', namespace='rest_framework'))
+    path('', include(router.urls)),
+    # path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
