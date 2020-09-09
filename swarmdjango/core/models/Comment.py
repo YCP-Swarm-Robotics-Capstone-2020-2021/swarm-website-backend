@@ -6,4 +6,4 @@ class Comment(models.Model):
     user = models.OneToOneField('User', on_delete=models.CASCADE)
     text = models.TextField()
     dateTime = models.DateTimeField(auto_now_add = True)
-    replies = models.ManyToManyField('self')
+    replies = models.ManyToManyField('self', blank=True)

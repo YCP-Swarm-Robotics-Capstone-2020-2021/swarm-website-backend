@@ -11,6 +11,6 @@ class Entry(models.Model):
     text = models.TextField()
     sideBar = models.OneToOneField('SideBar', on_delete=models.CASCADE)
     contributors = models.ManyToManyField('User')
-    headings = models.ManyToManyField('Heading')
-    comments = models.ManyToManyField('Comment')
+    headings = models.ManyToManyField('Heading', blank=True)
+    comments = models.ManyToManyField('Comment', blank=True)
     log = models.ManyToManyField('Change')
