@@ -6,7 +6,7 @@ from rest_framework import viewsets
 
 
 class AdminViewSet(viewsets.ModelViewSet):
-    queryset = Admin.objects.select_related()
+    queryset = Admin.objects.all()
     serializer_class = serializers.AdminSerializer
     filter_backends = (DjangoFilterBackend,)
     filter_fields = '__all__'
