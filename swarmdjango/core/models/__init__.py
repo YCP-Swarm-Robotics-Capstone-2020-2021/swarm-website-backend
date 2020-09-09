@@ -16,3 +16,8 @@ from .Developer import Developer
 from .Admin import Admin
 
 from .PhotoGallery import PhotoGallery
+
+from .Log import Log
+from .Run import Run
+from .Robot import Robot
+
