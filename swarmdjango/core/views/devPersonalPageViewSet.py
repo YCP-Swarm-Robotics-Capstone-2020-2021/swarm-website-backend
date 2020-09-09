@@ -7,6 +7,6 @@ from rest_framework import viewsets
 
 class DevPersonalPageViewSet(viewsets.ModelViewSet):
     queryset = DevPersonalPage.objects.all()
-    serializer_class = serializers.UserSerializer
+    serializer_class = serializers.DevPersonalPageSerializer
     filter_backends = (DjangoFilterBackend,)
     filter_fields = '__all__'

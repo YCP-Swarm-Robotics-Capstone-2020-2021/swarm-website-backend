@@ -7,6 +7,6 @@ from rest_framework import viewsets
 
 class SponsorViewSet(viewsets.ModelViewSet):
     queryset = Sponsor.objects.all()
-    serializer_class = serializers.UserSerializer
+    serializer_class = serializers.SponsorSerializer
     filter_backends = (DjangoFilterBackend,)
     filter_fields = '__all__'

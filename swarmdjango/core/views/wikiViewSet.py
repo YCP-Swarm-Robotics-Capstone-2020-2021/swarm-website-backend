@@ -7,6 +7,6 @@ from rest_framework import viewsets
 
 class WikiViewSet(viewsets.ModelViewSet):
     queryset = Wiki.objects.all()
-    serializer_class = serializers.UserSerializer
+    serializer_class = serializers.WikiSerializer
     filter_backends = (DjangoFilterBackend,)
     filter_fields = '__all__'

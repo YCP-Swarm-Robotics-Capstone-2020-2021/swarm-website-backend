@@ -7,6 +7,6 @@ from rest_framework import viewsets
 
 class SideBarViewSet(viewsets.ModelViewSet):
     queryset = SideBar.objects.all()
-    serializer_class = serializers.UserSerializer
+    serializer_class = serializers.SideBarSerializer
     filter_backends = (DjangoFilterBackend,)
     filter_fields = '__all__'

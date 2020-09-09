@@ -7,6 +7,6 @@ from rest_framework import viewsets
 
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
-    serializer_class = serializers.UserSerializer
+    serializer_class = serializers.CommentSerializer
     filter_backends = (DjangoFilterBackend,)
     filter_fields = '__all__'

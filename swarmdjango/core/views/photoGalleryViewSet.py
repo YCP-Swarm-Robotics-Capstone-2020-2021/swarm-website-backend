@@ -7,6 +7,6 @@ from rest_framework import viewsets
 
 class PhotoGalleryViewSet(viewsets.ModelViewSet):
     queryset = PhotoGallery.objects.all()
-    serializer_class = serializers.UserSerializer
+    serializer_class = serializers.PhotoGallerySerializer
     filter_backends = (DjangoFilterBackend,)
     filter_fields = '__all__'

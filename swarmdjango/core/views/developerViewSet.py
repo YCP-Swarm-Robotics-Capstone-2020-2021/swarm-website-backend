@@ -7,6 +7,6 @@ from rest_framework import viewsets
 
 class DeveloperViewSet(viewsets.ModelViewSet):
     queryset = Developer.objects.all()
-    serializer_class = serializers.UserSerializer
+    serializer_class = serializers.DeveloperSerializer
     filter_backends = (DjangoFilterBackend,)
     filter_fields = '__all__'
