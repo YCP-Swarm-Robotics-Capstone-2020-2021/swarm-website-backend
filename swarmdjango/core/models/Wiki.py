@@ -4,5 +4,5 @@ from core.models import Entry
 
 class Wiki(models.Model):
     title = models.TextField()
-    entries = models.ManyToManyField('Entry')
+    entries = models.ManyToManyField('Entry', blank=True)
     briefDescription = models.TextField()

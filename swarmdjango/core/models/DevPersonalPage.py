@@ -7,4 +7,4 @@ class DevPersonalPage(PersonalPage):
     expectedGraduationYear = models.IntegerField()
     biography = models.TextField()
     motivationForWorking = models.TextField()
-    contributions = models.ManyToManyField(Contribution)
+    contributions = models.ManyToManyField(Contribution, blank=True)
