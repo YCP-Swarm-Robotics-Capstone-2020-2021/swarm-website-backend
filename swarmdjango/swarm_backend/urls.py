@@ -14,8 +14,54 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from rest_framework import routers
+
+# Import all the view sets
+from core.views import userViewSet
+from core.views import adminViewSet
+from core.views import changeViewSet
+from core.views import commentViewSet
+from core.views import developerViewSet
+from core.views import devPersonalPageViewSet
+from core.views import entryViewSet
+from core.views import headingViewSet
+from core.views import personalPageViewSet
+from core.views import photoGalleryViewSet
+from core.views import sideBarViewSet
+from core.views import sponsorPersonalPageViewSet
+from core.views import sponsorViewSet
+from core.views import wikiViewSet
+from core.views import logViewSet
+from core.views import robotViewSet
+from core.views import runViewSet
+
+router = routers.DefaultRouter()
+
+# Route view sets via the router
+router.register('user', userViewSet.UserViewSet, basename='user')
+router.register('admin2', adminViewSet.AdminViewSet, basename='admin2')
+router.register('change', changeViewSet.ChangeViewSet, basename='change')
+router.register('comment', commentViewSet.CommentViewSet, basename='comment')
+router.register('developer', developerViewSet.DeveloperViewSet, basename= 'developer')
+router.register('devpersonalpage', devPersonalPageViewSet.DevPersonalPageViewSet, basename='devpersonalpage')
+router.register('entry', entryViewSet.EntryViewSet, basename='entry')
+router.register('heading', headingViewSet.HeadingViewSet, basename='heading')
+router.register('personalpage', personalPageViewSet.PersonalPageViewSet, basename='personalpage')
+router.register('photogallery', photoGalleryViewSet.PhotoGalleryViewSet, basename='photogallery')
+router.register('sidebar', sideBarViewSet.SideBarViewSet, basename='sidebar')
+router.register('sponsorpersonalpage', sponsorPersonalPageViewSet.SponsorPersonalPageViewSet, basename='sponsorpersonalpage')
+router.register('sponsor', sponsorViewSet.SponsorViewSet, basename='sponsor')
+router.register('wiki', wikiViewSet.WikiViewSet, basename='wiki')
+router.register('log', logViewSet.LogViewSet, basename='log')
+router.register('robot', robotViewSet.RobotViewSet, basename='robot')
+router.register('run', runViewSet.RunViewSet, basename='run')
+
+
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', include(router.urls)),
+    # path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
