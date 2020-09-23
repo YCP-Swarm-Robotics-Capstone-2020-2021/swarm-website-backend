@@ -132,7 +132,7 @@ class SponsorSerializer(serializers.ModelSerializer):
 class SponsorPersonalPageSerializer(serializers.ModelSerializer):
     class Meta:
         model = SponsorPersonalPage
-        fields = ('missionStatement', 'reasonForSponsorShip', 'companyLink')
+        fields = ('missionStatement', 'reasonForSponsorship', 'companyLink')
 
 
 # User serializer
