@@ -1,12 +1,11 @@
 from core.serializers import serializers
 from core.models import Run
 from django.test import TestCase
-import datetime
-
+from django.utils import timezone
 
 class RunSerializerTest(TestCase):
     def setUp(self):
-        date = datetime.datetime.now()
+        date = timezone.now()
         self.runAttribs = {
             'dateTime': date
             # Skip many to many

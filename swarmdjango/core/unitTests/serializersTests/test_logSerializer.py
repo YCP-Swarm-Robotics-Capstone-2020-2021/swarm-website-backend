@@ -1,7 +1,8 @@
 from core.serializers import serializers
 from core.models import Log, Robot, Run
 from django.test import TestCase
-import datetime
+from django.utils import timezone
+
 import ipaddress
 
 class LogSerializerTest(TestCase):
@@ -12,7 +13,7 @@ class LogSerializerTest(TestCase):
         }
         self.robot = Robot.objects.create(**self.robotAttribs)
 
-        date = datetime.datetime.now()
+        date = timezone.now()
         self.runAttribs = {
             'dateTime': date
             # Skip many to many
