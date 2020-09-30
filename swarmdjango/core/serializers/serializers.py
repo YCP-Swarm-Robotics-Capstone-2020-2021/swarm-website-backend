@@ -139,7 +139,7 @@ class SponsorPersonalPageSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('username', 'password', 'email', 'firstName', 'lastName')
+        fields = '__all__'
 
 
 # Wiki serializer
