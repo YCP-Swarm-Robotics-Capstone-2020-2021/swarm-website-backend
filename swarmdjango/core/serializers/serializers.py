@@ -33,84 +33,84 @@ class AdminSerializer(serializers.ModelSerializer):
 class ChangeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Change
-        fields = ('user', 'dateTime', 'context', 'textAdded')
+        fields = '__all__'
 
 
 # Comment serializer
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ('user', 'text', 'dateTime', 'replies')
+        fields = '__all__'
 
 
 # Contribution serializer
 class ContributionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contribution
-        fields = ('link', 'description', 'fileName')
+        fields = '__all__'
 
 
 # Developer serializer
 class DeveloperSerializer(serializers.ModelSerializer):
     class Meta:
         model = Developer
-        fields = ('teamRole', 'page')
+        fields = '__all__'
 
 
 # DevPersonalPage serializer
 class DevPersonalPageSerializer(serializers.ModelSerializer):
     class Meta:
         model = DevPersonalPage
-        fields = ('expectedGraduationYear', 'biography', 'motivationForWorking', 'contributions')
+        fields = '__all__'
 
 
 # Entry serializer
 class EntrySerializer(serializers.ModelSerializer):
     class Meta:
         model = Entry
-        fields = ('title', 'text', 'sideBar', 'contributors', 'headings', 'comments', 'log')
+        fields = '__all__'
 
 
 # Heading serializer
 class HeadingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Heading
-        fields = ('title', 'text', 'subHeadings', 'log')
+        fields = '__all__'
 
 
 # Log Serializer
 class LogSerializer(serializers.ModelSerializer):
     class Meta:
         model = Log
-        fields = ('dateTime', 'robot', 'run', 'log')
+        fields = '__all__'
 
 
 # PersonalPage serializer
 class PersonalPageSerializer(serializers.ModelSerializer):
     class Meta:
         model = PersonalPage
-        fields = ('pageType', 'pageTitle')
+        fields = '__all__'
 
 
 # Robot Serializer
 class RobotSerializer(serializers.ModelSerializer):
     class Meta:
         model = Robot
-        fields = ('name', 'ip')
+        fields = '__all__'
 
 
 # Run Serializer
 class RunSerializer(serializers.ModelSerializer):
     class Meta:
         model = Run
-        fields = ('dateTime', 'robots')
+        fields = '__all__'
 
 
 # PhotoGallery serializer
 class PhotoGallerySerializer(serializers.ModelSerializer):
     class Meta:
         model = PhotoGallery
-        fields = ('fileName', 'caption', 'uploadedBy')
+        fields = '__all__'
 
 
 # SideBar serializer
@@ -118,21 +118,21 @@ class SideBarSerializer(serializers.ModelSerializer):
     class Meta:
         model = SideBar
         # Fields needs to be either a list or a tuple, so since it's a single item it must be a list
-        fields = ['content']
+        fields = '__all__'
 
 
 # Sponsor serializer
 class SponsorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sponsor
-        fields = ('companyName', 'page')
+        fields = '__all__'
 
 
 # SponsorPersonalPage serializer
 class SponsorPersonalPageSerializer(serializers.ModelSerializer):
     class Meta:
         model = SponsorPersonalPage
-        fields = ('missionStatement', 'reasonForSponsorship', 'companyLink')
+        fields = '__all__'
 
 
 # User serializer
@@ -146,4 +146,4 @@ class UserSerializer(serializers.ModelSerializer):
 class WikiSerializer(serializers.ModelSerializer):
     class Meta:
         model = Wiki
-        fields = ('title', 'entries', 'briefDescription')
+        fields = '__all__'
