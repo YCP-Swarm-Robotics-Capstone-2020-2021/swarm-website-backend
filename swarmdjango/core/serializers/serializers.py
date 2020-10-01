@@ -128,6 +128,11 @@ class SponsorSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class SponsorPersonalPageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SponsorPersonalPage
+        fields = '__all__'
+
 
 # User serializer
 class UserSerializer(serializers.ModelSerializer):
