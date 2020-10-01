@@ -128,18 +128,22 @@ class SponsorSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-# SponsorPersonalPage serializer
-class SponsorPersonalPageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SponsorPersonalPage
-        fields = '__all__'
-
 
 # User serializer
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = '__all__'
+
+    def create(self, validated_data):
+        (obj, created) = User.objects.get_or_create(
+            username=validated_data['username'],
+            password=validated_data['password'],
+            email=validated_data['email'],
+            firstName=validated_data['firstName'],
+            lastName=validated_data['lastName'],
+        )
+        return obj
 
 
 # Wiki serializer

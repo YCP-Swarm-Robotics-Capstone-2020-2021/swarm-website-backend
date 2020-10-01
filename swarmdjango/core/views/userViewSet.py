@@ -1,3 +1,5 @@
+import sys
+
 from django_filters.rest_framework import DjangoFilterBackend
 
 from core.models import User
@@ -14,7 +16,3 @@ class UserViewSet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filter_fields = '__all__'
 
-    @action(methods=['post'], detail=False, name='Create new user')
-    def create_new_user(self, request, *args, **kwargs):
-        content = {'This shit worked'}
-        return Response(content, status=status.HTTP_200_OK)
