@@ -1,3 +1,4 @@
+from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 
 # Model Imports
@@ -143,7 +144,7 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         (obj, created) = User.objects.get_or_create(
             username=validated_data['username'],
-            password=validated_data['password'],
+            password=make_password(validated_data['password']),
             email=validated_data['email'],
             firstName=validated_data['firstName'],
             lastName=validated_data['lastName'],
