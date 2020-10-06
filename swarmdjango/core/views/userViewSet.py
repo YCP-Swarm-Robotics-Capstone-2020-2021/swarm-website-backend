@@ -16,15 +16,3 @@ class UserViewSet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filter_fields = '__all__'
 
-#######################################################################
-    @action(detail=False)
-    def checkPassword(self):
-        queryset = User.objects.all()
-        username = self.request.query_params.get('username', None)
-        if username is not None:
-            queryset = queryset.filter(username=username)
-            obj = False
-        else:
-            obj = "False"
-        return Response(obj, status=status.HTTP_200_OK, template_name=None, headers=None, content_type=None)
-#######################################################################
