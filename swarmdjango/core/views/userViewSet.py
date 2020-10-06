@@ -16,3 +16,8 @@ class UserViewSet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filter_fields = '__all__'
 
+    @action(detail=False)
+    def verify_password(self):
+
+        return Response("Hit route", status=status.HTTP_200_OK)
+
