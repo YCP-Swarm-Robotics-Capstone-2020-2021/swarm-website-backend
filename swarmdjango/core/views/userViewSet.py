@@ -21,9 +21,9 @@ class UserViewSet(viewsets.ModelViewSet):
         obj = request.data
         obj2 = self.request.data
         obj3 = self.request.query_params.get('username')
-
         queryset = User.objects.all()
         user = queryset.filter(username=obj3)
+        serialzer = serializers.UserSerializer(user[0])
 
-        return Response(user, status=status.HTTP_200_OK)
+        return Response(serialzer.data, status=status.HTTP_200_OK)
 
