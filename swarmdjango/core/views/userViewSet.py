@@ -17,7 +17,13 @@ class UserViewSet(viewsets.ModelViewSet):
     filter_fields = '__all__'
 
     @action(detail=False)
-    def verify_password(self):
+    def verify_password(self, request):
+        obj = request.data
+        obj2 = self.request.data
+        obj3 = self.request.query_params.get('username')
 
-        return Response("Hit route", status=status.HTTP_200_OK)
+        queryset = User.objects.all()
+        user = queryset.filter(username=obj3)
+
+        return Response(user, status=status.HTTP_200_OK)
 
