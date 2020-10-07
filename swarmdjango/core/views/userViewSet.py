@@ -1,5 +1,6 @@
 from django.contrib.auth.hashers import check_password
 from django.shortcuts import get_object_or_404
+from django.template.defaultfilters import first
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
 
@@ -20,18 +21,24 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(detail=False)
     def verify_password(self, request):
 
-        obj3 = self.request.query_params.get('username')
-        obj4 = self.request.query_params.get('password')
+        username = self.request.query_params.get('username')
+        password = self.request.query_params.get('password')
         queryset = User.objects.all()
-        user = queryset.filter(username=obj3)
-        serialzer = serializers.UserSerializer(user[0])
 
-        hash = serialzer.data.get('password')
+        user = queryset.filter(username=username)
 
-        if check_password(obj4, hash):
-            return Response("Success", status=status.HTTP_200_OK)
+        try:
+            user_serialized = serializers.UserSerializer(user[0])
+        except IndexError:
+            return Response({"Error": "Record does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Retrieve the user password from the returned object
+        hash = user_serialized.data.get('password')
+
+        if check_password(password, hash):
+            return Response({"status": True}, status=status.HTTP_200_OK)
         else:
-            return Response("Fail", status=status.HTTP_400_BAD_REQUEST)
+            return Response({"status": False}, status=status.HTTP_400_BAD_REQUEST)
 
 
 
