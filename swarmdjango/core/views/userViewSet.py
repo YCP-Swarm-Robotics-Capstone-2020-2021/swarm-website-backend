@@ -36,9 +36,9 @@ class UserViewSet(viewsets.ModelViewSet):
         hash = user_serialized.data.get('password')
 
         if check_password(password, hash):
-            return Response({"status": True}, status=status.HTTP_200_OK)
+            return Response({"Status": True}, status=status.HTTP_200_OK)
         else:
-            return Response({"status": False}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"Status": False, "Error": "Password was incorrect"}, status=status.HTTP_404_NOT_FOUND)
 
 
 
