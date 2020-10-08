@@ -1,6 +1,4 @@
 from django.contrib.auth.hashers import check_password
-from django.shortcuts import get_object_or_404
-from django.template.defaultfilters import first
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
 
