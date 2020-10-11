@@ -4,3 +4,4 @@ django-filter>=2.0,<3.0
 django-cors-headers>=3.0,<4.0
 coverage>=5.0,<6.0
 psycopg2-binary>=2.8
+python-decouple>=3,<4
