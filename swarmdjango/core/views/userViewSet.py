@@ -2,8 +2,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from core.serializers import serializers
 from rest_framework import viewsets
-from django.contrib.auth.models import User
-
+from core.models import User
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
