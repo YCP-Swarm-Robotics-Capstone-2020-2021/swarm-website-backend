@@ -3,8 +3,7 @@
   services:
     web:
       build: .
-      #command: python manage.py runserver 0.0.0.0:8000
-      command: gunicorn --bind 0.0.0.0:8000 swarm_backend.wsgi
+      command: python manage.py runserver 0.0.0.0:8000
       volumes:
         - .:/code
       ports:
