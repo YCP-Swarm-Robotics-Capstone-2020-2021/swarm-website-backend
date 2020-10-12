@@ -20,20 +20,20 @@ from decouple import config
 # SECURITY WARNING: keep the secret key used in production secret
 
 
-SECRET_KEY = config('SECRET_KEY', default="password", cast=str)
+SECRET_KEY = config('SECRET_KEY', default="secretkeyorsomethin")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = [
-    '0.0.0.0',
+    config('ALLOWED_HOST', default='0.0.0.0'),
     'localhost'
 ]
 
 CORS_ORIGIN_ALLOW_ALL = False
 
 CORS_ORIGIN_WHITELIST = [
-    "http://localhost:3000"
+    config('CORS_ORIGIN_WHITELIST', default="http://localhost:3000")
 ]
 
 
@@ -90,10 +90,10 @@ WSGI_APPLICATION = 'swarm_backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'swarm',
-        'USER': 'admin',
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': 'swarmpostgres',
+        'NAME': config('DATABASE_NAME', default='swarm'),
+        'USER': config('DATABASE_USER', default='admin'),
+        'PASSWORD': config('DB_PASSWORD', default='batman'),
+        'HOST': config('DATABASE_HOST', default='swarmpostgres'),
         'PORT': 5432,
     }
 }
