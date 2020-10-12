@@ -20,7 +20,7 @@ from decouple import config
 # SECURITY WARNING: keep the secret key used in production secret
 
 
-SECRET_KEY = config('LOCAL_SECRET_KEY', default="password", cast=str)
+SECRET_KEY = config('SECRET_KEY', default="password", cast=str)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
@@ -92,7 +92,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'swarm',
         'USER': 'admin',
-        'PASSWORD': config('LOCAL_PASSWORD'),
+        'PASSWORD': config('DB_PASSWORD'),
         'HOST': 'swarmpostgres',
         'PORT': 5432,
     }
