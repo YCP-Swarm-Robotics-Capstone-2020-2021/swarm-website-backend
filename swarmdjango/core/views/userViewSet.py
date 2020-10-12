@@ -13,8 +13,3 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.UserSerializer
     filter_backends = (DjangoFilterBackend,)
     filter_fields = '__all__'
-
-    @action(methods=['post'], detail=False, name='Create new user')
-    def create_new_user(self, request, *args, **kwargs):
-        content = {'This shit worked'}
-        return Response(content, status=status.HTTP_200_OK)
