@@ -3,7 +3,7 @@
   services:
     web:
       build: .
-      #command: python manage.py runserver 0.0.0.0:8000
+      #-w adds workers, 4 for now but we can add if server traffic warrants it
       command: gunicorn -w 4 --bind 0.0.0.0:8000 swarm_backend.wsgi
       volumes:
         - .:/code
