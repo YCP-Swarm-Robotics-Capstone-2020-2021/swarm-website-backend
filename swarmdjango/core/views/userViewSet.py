@@ -1,9 +1,8 @@
 from django_filters.rest_framework import DjangoFilterBackend
 
-from core.models import User
 from core.serializers import serializers
 from rest_framework import viewsets
-
+from core.models import User
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
