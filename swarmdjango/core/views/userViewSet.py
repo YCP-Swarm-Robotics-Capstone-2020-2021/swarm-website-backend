@@ -2,8 +2,9 @@ from django.contrib.auth.hashers import check_password
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
 
-from core.models import User
 from core.serializers import serializers
+from rest_framework import viewsets
+from core.models import User
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework import status
