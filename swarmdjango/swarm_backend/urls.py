@@ -36,7 +36,7 @@ from core.views import logViewSet
 from core.views import robotViewSet
 from core.views import runViewSet
 
-router = routers.DefaultRouter()
+router = routers.DefaultRouter(trailing_slash= False)
 
 # Route view sets via the router
 router.register('user', userViewSet.UserViewSet, basename='user')
