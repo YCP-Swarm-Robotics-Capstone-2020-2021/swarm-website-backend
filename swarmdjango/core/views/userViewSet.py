@@ -39,5 +39,19 @@ class UserViewSet(viewsets.ModelViewSet):
         else:
             return Response({"Status": False, "Error": "Password was incorrect"}, status=status.HTTP_404_NOT_FOUND)
 
+    @action(detail=False)
+    def find_user(self, request):
+        username = self.request.query_params.get('username')
+        queryset = User.objects.all()
+
+        user = queryset.filter(username=username)
+
+        try:
+            serializers.UserSerializer(user[0])
+        except IndexError:
+            return Response({"Error": "Record does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+        return Response({"Status": True,}, status=status.HTTP_200_OK)
+
 
 
