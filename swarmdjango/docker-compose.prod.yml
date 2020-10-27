@@ -14,6 +14,7 @@ services:
     image: nginx:latest
     ports:
       - 1337:80
+      - 1338:81
     depends_on:
       - web
     volumes:
