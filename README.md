@@ -1,6 +1,11 @@
-## Obtain secret files
-- secrets.json (goes into swarmdjango directory)
-- env.list (goes into swarmpostgres directory)
+## Obtain .env file
+File goes into the ```swarmdjango``` directory.
+For local development all you need are the following variables to be set:
+- DB_PASSWORD
+- SECRET_KEY
+- DEBUG=True  
+
+Contact repo owners or contributors for these variable values.
 
 ## Build backend Docker containers
 sh dockerUpBackend.sh

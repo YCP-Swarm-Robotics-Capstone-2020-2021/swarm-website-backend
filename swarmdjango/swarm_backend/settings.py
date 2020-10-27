@@ -9,42 +9,32 @@ https://docs.djangoproject.com/en/2.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
-import json
-import os
+
 from django.core.exceptions import ImproperlyConfigured
-
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-with open(os.path.join(BASE_DIR, 'secrets.json')) as secretsFile:
-    secrets = json.load(secretsFile)
-
-def getSecret(setting, secrets=secrets):
-    #Get secret setting or fail with ImproperlyConfigured
-    try:
-        return secrets[setting]
-    except KeyError:
-        raise ImproperlyConfigured("Set the {} setting".format(setting))
+from decouple import config
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = getSecret('SECRET_KEY')
+
+# SECURITY WARNING: keep the secret key used in production secret
+
+
+SECRET_KEY = config('SECRET_KEY', default="secretkeyorsomethin")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = [
-    '0.0.0.0',
+    config('ALLOWED_HOST', default='0.0.0.0'),
     'localhost'
 ]
 
 CORS_ORIGIN_ALLOW_ALL = False
 
 CORS_ORIGIN_WHITELIST = [
-    "http://localhost:3000",
-    "http://localhost:1337"
+    "http://localhost:1337",
+    config('CORS_ORIGIN_WHITELIST', default="http://localhost:3000")
 ]
 
 
@@ -101,10 +91,10 @@ WSGI_APPLICATION = 'swarm_backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'swarm',
-        'USER': 'admin',
-        'PASSWORD': getSecret('DB_PASSWORD'),
-        'HOST': 'swarmpostgres',
+        'NAME': config('DATABASE_NAME', default='swarm'),
+        'USER': config('DATABASE_USER', default='admin'),
+        'PASSWORD': config('DB_PASSWORD', default='batman'),
+        'HOST': config('DATABASE_HOST', default='swarmpostgres'),
         'PORT': 5432,
     }
 }
@@ -147,4 +137,4 @@ USE_TZ = True
 
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+#STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
