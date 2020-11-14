@@ -12,10 +12,12 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 from django.core.exceptions import ImproperlyConfigured
 from decouple import config
+import os
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret
 
@@ -33,7 +35,8 @@ ALLOWED_HOSTS = [
 CORS_ORIGIN_ALLOW_ALL = False
 
 CORS_ORIGIN_WHITELIST = [
-    config('CORS_ORIGIN_WHITELIST', default="http://localhost:3000")
+    config('CORS_ORIGIN_WHITELIST', default="http://localhost:3000"),
+    config('CORS_ORIGIN_WHITELIST', default="http://0.0.0.0:8000")
 ]
 
 
@@ -69,7 +72,7 @@ ROOT_URLCONF = 'swarm_backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'build')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -136,4 +139,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
-#STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "build/static")
+]
