@@ -6,6 +6,7 @@ from core.models import Heading
 from core.models import Comment
 from core.models import User
 
+
 class Entry(models.Model):
     title = models.TextField()
     text = models.TextField()
@@ -14,3 +15,6 @@ class Entry(models.Model):
     headings = models.ManyToManyField('Heading', blank=True)
     comments = models.ManyToManyField('Comment', blank=True)
     log = models.ManyToManyField('Change')
+
+    class Meta:
+        get_latest_by = 'log'
