@@ -29,3 +29,19 @@ class WikiViewSet(viewsets.ModelViewSet):
         date_time = latest.log.latest().dateTime
 
         return Response({"date": date_time}, status=status.HTTP_200_OK)
+
+    @action(detail=False)
+    def delete_wiki(self, request, *args, **kwargs):
+        id = self.request.query_params.get('id')
+        wiki_to_delete = get_object_or_404(Wiki, id=id)
+
+        # delete associated models (entries), then the wiki
+        entries = wiki_to_delete.entries.all()
+        for entry in entries:
+            entry.log.all().delete()
+            entry.comments.all().delete()
+            entry.headings.all().delete()
+            entry.sideBar.delete()
+
+        wiki_to_delete.delete()
+        return Response(status=status.HTTP_200_OK)
