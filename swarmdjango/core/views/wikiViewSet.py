@@ -42,6 +42,7 @@ class WikiViewSet(viewsets.ModelViewSet):
             entry.comments.all().delete()
             entry.headings.all().delete()
             entry.sideBar.delete()
+            entry.delete()
 
         wiki_to_delete.delete()
         return Response(status=status.HTTP_200_OK)
