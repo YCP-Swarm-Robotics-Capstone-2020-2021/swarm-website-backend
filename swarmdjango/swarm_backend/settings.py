@@ -29,14 +29,16 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = [
     config('ALLOWED_HOST', default='0.0.0.0'),
-    'localhost'
+    'localhost',
+    "swarm-backend-env.eba-s3v8phrp.us-east-1.elasticbeanstalk.com"
 ]
 
 CORS_ORIGIN_ALLOW_ALL = False
 
 CORS_ORIGIN_WHITELIST = [
     config('CORS_ORIGIN_WHITELIST', default="http://localhost:3000"),
-    config('CORS_ORIGIN_WHITELIST', default="http://0.0.0.0:8000")
+    config('CORS_ORIGIN_WHITELIST', default="http://0.0.0.0:8000"),
+    "swarm-backend-env.eba-s3v8phrp.us-east-1.elasticbeanstalk.com"
 ]
 
 
