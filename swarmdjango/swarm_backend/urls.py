@@ -35,7 +35,7 @@ from core.views import wikiViewSet
 from core.views import logViewSet
 from core.views import robotViewSet
 from core.views import runViewSet
-from core.views_front import index
+from core.views_front import index, wiki
 
 router = routers.DefaultRouter(trailing_slash= False)
 
@@ -64,6 +64,7 @@ router.register('run', runViewSet.RunViewSet, basename='run')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    path('', index, name='index')
+    path('', index, name='index'),
+    path('wiki/', wiki, name='wiki')
     # path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
