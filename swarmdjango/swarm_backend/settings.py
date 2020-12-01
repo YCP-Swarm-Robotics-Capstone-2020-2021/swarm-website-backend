@@ -21,16 +21,17 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret
 
-
 SECRET_KEY = config('SECRET_KEY', default="secretkeyorsomethin")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
+
 ALLOWED_HOSTS = [
     config('ALLOWED_HOST', default='0.0.0.0'),
     'localhost',
-    "swarm-backend-env.eba-s3v8phrp.us-east-1.elasticbeanstalk.com"
+    'swarmrobotics.io',
+    'swarm-robotics-env.us-east-1.elasticbeanstalk.com'
 ]
 
 CORS_ORIGIN_ALLOW_ALL = False
@@ -38,7 +39,8 @@ CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = [
     config('CORS_ORIGIN_WHITELIST', default="http://localhost:3000"),
     config('CORS_ORIGIN_WHITELIST', default="http://0.0.0.0:8000"),
-    "swarm-backend-env.eba-s3v8phrp.us-east-1.elasticbeanstalk.com"
+    config('CORS_ORIGIN_WHITELIST', default="http://swarmrobotics.io"),
+    config('CORS_ORIGIN_WHITELIST', default="http://swarm-robotics-env.us-east-1.elasticbeanstalk.com")
 ]
 
 
@@ -90,18 +92,31 @@ TEMPLATES = [
 WSGI_APPLICATION = 'swarm_backend.wsgi.application'
 
 
-#connect to postgres container via hostname,
-#this is possible as we are running on a network bridge
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DATABASE_NAME', default='swarm'),
-        'USER': config('DATABASE_USER', default='admin'),
-        'PASSWORD': config('DB_PASSWORD', default='batman'),
-        'HOST': config('DATABASE_HOST', default='swarmpostgres'),
-        'PORT': 5432,
+# connect to postgres container via hostname,
+# this is possible as we are running on a network bridge
+
+if 'RDS_HOSTNAME' in os.environ:
+    DATABASES = {
+        'default': {
+            'ENGINE': config('RDS_ENGINE', default='django.db.backends.postgresql'),
+            'NAME': config('RDS_NAME', default='swarm'),
+            'USER': config('RDS_USER', default='admin'),
+            'PASSWORD': config('RDS_PASSWORD', default='DB_PASSWORD'),
+            'HOST': config('RDS_HOST', default='swarmpostgres'),
+            'PORT': config('RDS_PORT', default='5432'),
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': config('SQL_ENGINE', default='django.db.backends.postgresql'),
+            'NAME': config('DATABASE_NAME', default='swarm'),
+            'USER': config('SQL_USER', default='admin'),
+            'PASSWORD': config('SQL_PASSWORD', default='batman'),
+            'HOST': config('SQL_HOST', default='swarmpostgres'),
+            'PORT': 5432,
+        }
+    }
 
 
 # Password validation
