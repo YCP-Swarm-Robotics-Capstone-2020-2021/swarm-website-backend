@@ -161,3 +161,11 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "build/static")
 ]
+
+# This disables the browsable aspect of the api
+# REST_FRAMEWORK = {
+#     # Only enable JSON renderer by default.
+#     'DEFAULT_RENDERER_CLASSES': [
+#         'rest_framework.renderers.JSONRenderer',
+#     ],
+# }
