@@ -132,3 +132,4 @@ dmypy.json
 swarmdjango/secrets.json
 swarmpostgres/env.list
 .idea/
+swarmdjango/static/
