@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.auth.hashers import check_password
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
@@ -17,11 +19,15 @@ class UserViewSet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filter_fields = '__all__'
 
-    @action(detail=False)
+    @action(methods=['post'], detail=False)
     def verify_password(self, request):
 
-        username = self.request.query_params.get('username')
-        password = self.request.query_params.get('password')
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+
+        username = body['username']
+        password = body['password']
+
         queryset = User.objects.all()
 
         user = queryset.filter(username=username)
