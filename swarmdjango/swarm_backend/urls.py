@@ -63,6 +63,4 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
     re_path(r'^.*$', index, name='index'),
-    # path('wiki/', wiki, name='wiki')
-    # path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
