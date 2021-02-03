@@ -103,7 +103,11 @@ celerybeat.pid
 
 # Environments
 .env*
+<<<<<<< HEAD
 .venv
+=======
+.venv*
+>>>>>>> ed4b88fe89ddc65a0c8519e5795a8c4a24b8a731
 env/
 venv/
 ENV/
@@ -133,3 +137,4 @@ swarmdjango/secrets.json
 swarmpostgres/env.list
 .idea/
 swarmdjango/static/
+swarmdjango/.elasticbeanstalk
