@@ -12,28 +12,35 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 from django.core.exceptions import ImproperlyConfigured
 from decouple import config
+import os
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret
-
 
 SECRET_KEY = config('SECRET_KEY', default="secretkeyorsomethin")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
+
 ALLOWED_HOSTS = [
     config('ALLOWED_HOST', default='0.0.0.0'),
-    'localhost'
+    'localhost',
+    'swarmrobotics.io',
+    'swarm-robotics-env.us-east-1.elasticbeanstalk.com'
 ]
 
 CORS_ORIGIN_ALLOW_ALL = False
 
 CORS_ORIGIN_WHITELIST = [
-    config('CORS_ORIGIN_WHITELIST', default="http://localhost:3000")
+    config('CORS_ORIGIN_WHITELIST', default="http://localhost:3000"),
+    config('CORS_ORIGIN_WHITELIST', default="http://0.0.0.0:8000"),
+    config('CORS_ORIGIN_WHITELIST', default="http://swarmrobotics.io"),
+    config('CORS_ORIGIN_WHITELIST', default="http://swarm-robotics-env.us-east-1.elasticbeanstalk.com")
 ]
 
 
@@ -69,7 +76,7 @@ ROOT_URLCONF = 'swarm_backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'build')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -85,18 +92,31 @@ TEMPLATES = [
 WSGI_APPLICATION = 'swarm_backend.wsgi.application'
 
 
-#connect to postgres container via hostname,
-#this is possible as we are running on a network bridge
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DATABASE_NAME', default='swarm'),
-        'USER': config('DATABASE_USER', default='admin'),
-        'PASSWORD': config('DB_PASSWORD', default='batman'),
-        'HOST': config('DATABASE_HOST', default='swarmpostgres'),
-        'PORT': 5432,
+# connect to postgres container via hostname,
+# this is possible as we are running on a network bridge
+
+if 'RDS_HOSTNAME' in os.environ:
+    DATABASES = {
+        'default': {
+            'ENGINE': config('RDS_ENGINE', default='django.db.backends.postgresql'),
+            'NAME': config('RDS_NAME', default='swarm'),
+            'USER': config('RDS_USER', default='admin'),
+            'PASSWORD': config('RDS_PASSWORD', default='DB_PASSWORD'),
+            'HOST': config('RDS_HOST', default='swarmpostgres'),
+            'PORT': config('RDS_PORT', default='5432'),
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': config('SQL_ENGINE', default='django.db.backends.postgresql'),
+            'NAME': config('DATABASE_NAME', default='swarm'),
+            'USER': config('SQL_USER', default='admin'),
+            'PASSWORD': config('SQL_PASSWORD', default='batman'),
+            'HOST': config('SQL_HOST', default='swarmpostgres'),
+            'PORT': 5432,
+        }
+    }
 
 
 # Password validation
@@ -136,4 +156,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
-#STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "build/static")
+]
+
+# This disables the browsable aspect of the api
+# REST_FRAMEWORK = {
+#     # Only enable JSON renderer by default.
+#     'DEFAULT_RENDERER_CLASSES': [
+#         'rest_framework.renderers.JSONRenderer',
+#     ],
+# }
