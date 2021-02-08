@@ -108,6 +108,8 @@ try:
                 'PORT': config('RDS_PORT', default='5432'),
             }
         }
+    else:
+        raise UndefinedValueError
 except UndefinedValueError:
     DATABASES = {
         'default': {
