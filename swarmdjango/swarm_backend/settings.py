@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 from django.core.exceptions import ImproperlyConfigured
 from decouple import config
+from decouple import UndefinedValueError
 import os
 
 # Quick-start development settings - unsuitable for production
@@ -95,18 +96,21 @@ WSGI_APPLICATION = 'swarm_backend.wsgi.application'
 # connect to postgres container via hostname,
 # this is possible as we are running on a network bridge
 
-if 'RDS_HOSTNAME' in os.environ:
-    DATABASES = {
-        'default': {
-            'ENGINE': config('RDS_ENGINE', default='django.db.backends.postgresql'),
-            'NAME': config('RDS_NAME', default='swarm'),
-            'USER': config('RDS_USER', default='admin'),
-            'PASSWORD': config('RDS_PASSWORD', default='DB_PASSWORD'),
-            'HOST': config('RDS_HOST', default='swarmpostgres'),
-            'PORT': config('RDS_PORT', default='5432'),
+try:
+    if config('PRODUCTION', cast=bool):
+        DATABASES = {
+            'default': {
+                'ENGINE': config('RDS_ENGINE', default='django.db.backends.postgresql'),
+                'NAME': config('RDS_NAME', default='swarm'),
+                'USER': config('RDS_USER', default='admin'),
+                'PASSWORD': config('RDS_PASSWORD', default='DB_PASSWORD'),
+                'HOST': config('RDS_HOST', default='swarmpostgres'),
+                'PORT': config('RDS_PORT', default='5432'),
+            }
         }
-    }
-else:
+    else:
+        raise UndefinedValueError
+except UndefinedValueError:
     DATABASES = {
         'default': {
             'ENGINE': config('SQL_ENGINE', default='django.db.backends.postgresql'),
