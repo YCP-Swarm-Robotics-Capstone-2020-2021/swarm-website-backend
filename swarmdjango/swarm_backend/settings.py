@@ -61,6 +61,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'django.middleware.gzip.GZipMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -166,10 +167,12 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "build/static")
 ]
 
-# This disables the browsable aspect of the api
 # REST_FRAMEWORK = {
 #     # Only enable JSON renderer by default.
-#     'DEFAULT_RENDERER_CLASSES': [
-#         'rest_framework.renderers.JSONRenderer',
-#     ],
+#     # 'DEFAULT_RENDERER_CLASSES': [
+#     #     'rest_framework.renderers.JSONRenderer',
+#     # ],
+#     'DEFAULT_PARSER_CLASSES': [
+#         'rest_framework.parsers.'
+#     ]
 # }
