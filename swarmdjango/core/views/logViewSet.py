@@ -15,17 +15,24 @@ class LogViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.LogSerializer
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ['dateTime', 'robot', 'run']
-    # parser_classes = [MultiPartParser]
 
-    # Method to accept the log file upload from the GCS
+    '''
+    This method accepts a zip of log files from an http POST request.
+    It then writes the bytes from the request to the directory and extracts the files.
+    Next it iterates through the files in the zip, stores the raw file in the S3 bucket,
+    and parses the contents of the files into the scripts for visualization and the json for storage.
+    
+    Gzip is required for parsing the body of the response from bytes to a zip file.
+    '''
     @gzip_page
     @action(methods=['post'], detail=False)
     def upload_log_zip(self, request):
-        # file_obj = request.data['file']
+        # Write the request bytes to destination of 'upload.zip'
         with open('upload.zip', 'wb+') as destination:
             for chunk in request.FILES['file'].chunks():
                 destination.write(chunk)
 
+        # Open and begin processing the uploaded files
         with ZipFile('upload.zip') as upload:
             return Response({"Message": "Uploaded."})
         
