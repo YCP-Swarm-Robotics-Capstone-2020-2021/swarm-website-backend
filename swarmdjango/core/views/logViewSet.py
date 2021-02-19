@@ -4,10 +4,10 @@ from core.serializers import serializers
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.parsers import FileUploadParser, MultiPartParser
 from django.views.decorators.gzip import gzip_page
 from rest_framework import status
 from zipfile import ZipFile
+import os
 
 
 class LogViewSet(viewsets.ModelViewSet):
@@ -27,12 +27,24 @@ class LogViewSet(viewsets.ModelViewSet):
     @gzip_page
     @action(methods=['post'], detail=False)
     def upload_log_zip(self, request):
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
         # Write the request bytes to destination of 'upload.zip'
         with open('upload.zip', 'wb+') as destination:
             for chunk in request.FILES['file'].chunks():
                 destination.write(chunk)
 
         # Open and begin processing the uploaded files
-        with ZipFile('upload.zip') as upload:
-            return Response({"Message": "Uploaded."})
-        
+        with ZipFile('upload.zip', 'r') as upload:
+            upload.extractall()
+            zip_root = upload.namelist()[0]
+            for root, directories, files in os.walk(zip_root):
+                for file in files:
+                    print(file)
+            os.removedirs(os.path.join(base_dir, '../upload.zip'))
+            os.removedirs(os.path.join(base_dir, '../__MACOSX'))
+            os.removedirs(os.path.join(base_dir, '../onerobotlog'))
+
+            # Check the zip file CRCs
+            return Response({"Message": "Uplaoded."})
+
