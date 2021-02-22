@@ -8,6 +8,7 @@ from django.views.decorators.gzip import gzip_page
 from rest_framework import status
 from zipfile import ZipFile
 import os
+import shutil
 
 
 class LogViewSet(viewsets.ModelViewSet):
@@ -38,13 +39,15 @@ class LogViewSet(viewsets.ModelViewSet):
         with ZipFile('upload.zip', 'r') as upload:
             upload.extractall()
             zip_root = upload.namelist()[0]
-            for root, directories, files in os.walk(zip_root):
+            for root, directories, files in os.walk(os.path.join(base_dir, '../' + zip_root)):
                 for file in files:
-                    print(file)
-            os.removedirs(os.path.join(base_dir, '../upload.zip'))
-            os.removedirs(os.path.join(base_dir, '../__MACOSX'))
-            os.removedirs(os.path.join(base_dir, '../onerobotlog'))
+                    # print(file)
+                    pass
 
-            # Check the zip file CRCs
-            return Response({"Message": "Uplaoded."})
+        os.remove(os.path.join(base_dir, '../upload.zip'))
+        shutil.rmtree(os.path.join(base_dir, '../onerobotlog'))
+        shutil.rmtree(os.path.join(base_dir, '../__MACOSX'))
+
+        # Check the zip file CRCs
+        return Response({"Message": "Uplaoded."})
 
