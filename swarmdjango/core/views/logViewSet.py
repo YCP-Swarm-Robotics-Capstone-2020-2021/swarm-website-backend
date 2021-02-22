@@ -39,15 +39,21 @@ class LogViewSet(viewsets.ModelViewSet):
         with ZipFile('upload.zip', 'r') as upload:
             upload.extractall()
             zip_root = upload.namelist()[0]
+            print('Processing logs')
             for root, directories, files in os.walk(os.path.join(base_dir, '../' + zip_root)):
                 for file in files:
-                    # print(file)
-                    pass
+                    print(file)
 
+        # Clean up the files and directories that get created
         os.remove(os.path.join(base_dir, '../upload.zip'))
         shutil.rmtree(os.path.join(base_dir, '../onerobotlog'))
-        shutil.rmtree(os.path.join(base_dir, '../__MACOSX'))
+        
+        # Walk the directory above to make sure the __MACOSX directory gets deleted on my computer
+        for root, directories, files in os.walk(os.path.join(base_dir, '../')):
+            if '__MACOSX' in directories:
+                print('Removing directory created by mac os')
+                shutil.rmtree(os.path.join(base_dir, '../__MACOSX'))
 
         # Check the zip file CRCs
-        return Response({"Message": "Uplaoded."})
+        return Response({"Message": "Uploaded."})
 
