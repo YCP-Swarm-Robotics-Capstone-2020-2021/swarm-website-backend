@@ -37,7 +37,6 @@ class EntryViewSet(viewsets.ModelViewSet):
         # its headings
         logs = (entry.log.all().values())
         for heading in entry.headings.all():
-            logs = logs.union(heading.log.all().values())
-        logs.order_by('dateTime')
+            logs = logs.union(heading.log.all().values()).order_by('-id')
 
         return Response(logs, status=status.HTTP_200_OK);
