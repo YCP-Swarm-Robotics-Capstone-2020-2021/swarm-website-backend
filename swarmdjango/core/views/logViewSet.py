@@ -4,11 +4,12 @@ from core.serializers import serializers
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from django.views.decorators.gzip import gzip_page
 from rest_framework import status
 from zipfile import ZipFile
+from decouple import config
 import os
 import shutil
+import boto3
 
 
 class LogViewSet(viewsets.ModelViewSet):
@@ -22,12 +23,13 @@ class LogViewSet(viewsets.ModelViewSet):
     It then writes the bytes from the request to the directory and extracts the files.
     Next it iterates through the files in the zip, stores the raw file in the S3 bucket,
     and parses the contents of the files into the scripts for visualization and the json for storage.
-    
-    Gzip is required for parsing the body of the response from bytes to a zip file.
     '''
-    @gzip_page
     @action(methods=['post'], detail=False)
     def upload_log_zip(self, request):
+        s3 = boto3.resource('s3',
+                            aws_access_key_id=config('AWS_ACCESS_KEY'),
+                            aws_secret_access_key=config('AWS_SECRET_ACCESS_KEY'))
+
         base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
         # Write the request bytes to destination of 'upload.zip'
@@ -36,24 +38,43 @@ class LogViewSet(viewsets.ModelViewSet):
                 destination.write(chunk)
 
         # Open and begin processing the uploaded files
+        zip_root = ''
         with ZipFile('upload.zip', 'r') as upload:
+            # Extract the zip file to access the files
             upload.extractall()
+            # The log files will be under a common 'root' directory
             zip_root = upload.namelist()[0]
             print('Processing logs')
+            # Walk through the upper most directory
             for root, directories, files in os.walk(os.path.join(base_dir, '../' + zip_root)):
+                # Iterate through each file in the zip files
                 for file in files:
-                    print(file)
+                    # We are only interested in processing and storing the moos and alog files
+                    if '._moos' in file or '.alog' in file:
+                        print('Processing ' + root + file)
+                        # Open the file as binary data
+                        file_data = open(root + '/' + file, 'rb')
+                        # Place the file in the bucket
+                        s3.Bucket('elasticbeanstalk-us-east-1-086806089714').put_object(Key=file, Body=file_data)
+                        # TODO Store raw file in S3
+                        # TODO Parse for visualization
+                        # TODO Parse into json
+                        # TODO Store database
 
         # Clean up the files and directories that get created
-        os.remove(os.path.join(base_dir, '../upload.zip'))
-        shutil.rmtree(os.path.join(base_dir, '../onerobotlog'))
-        
-        # Walk the directory above to make sure the __MACOSX directory gets deleted on my computer
+        try:
+            os.remove(os.path.join(base_dir, '../upload.zip'))
+        except OSError as error:
+            print('Error removing upload.zip \n' + error)
+        if zip_root != '':
+            shutil.rmtree(os.path.join(base_dir, '../' + zip_root))
+
+        # Walk the directory above to make sure the __MACOSX directory gets deleted if it is created
         for root, directories, files in os.walk(os.path.join(base_dir, '../')):
             if '__MACOSX' in directories:
-                print('Removing directory created by mac os')
                 shutil.rmtree(os.path.join(base_dir, '../__MACOSX'))
+                break
 
-        # Check the zip file CRCs
+        # Return the response
         return Response({"Message": "Uploaded."})
 
