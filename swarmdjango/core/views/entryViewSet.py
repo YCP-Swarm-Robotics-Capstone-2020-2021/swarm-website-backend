@@ -27,3 +27,17 @@ class EntryViewSet(viewsets.ModelViewSet):
 
         entry_to_delete.delete()
         return Response(status=status.HTTP_200_OK)
+
+    @action(methods=['get'], detail=False)
+    def get_all_changes(self, request):
+        id = self.request.query_params.get('id')
+        entry = get_object_or_404(Entry, id=id)
+
+        # get all Change objects for the chose entry, and each of
+        # its headings
+        logs = (entry.log.all().values())
+        for heading in entry.headings.all():
+            logs = logs.union(heading.log.all().values())
+        logs.order_by('dateTime')
+
+        return Response(logs, status=status.HTTP_200_OK);
