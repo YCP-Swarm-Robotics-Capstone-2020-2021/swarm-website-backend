@@ -13,7 +13,6 @@ import shutil
 import boto3
 
 
-
 class LogViewSet(viewsets.ModelViewSet):
     queryset = Log.objects.all()
     serializer_class = serializers.LogSerializer
@@ -51,18 +50,29 @@ class LogViewSet(viewsets.ModelViewSet):
             for root, directories, files in os.walk(os.path.join(base_dir, '../' + zip_root)):
                 # Iterate through each file in the zip files
                 for file in files:
-                    # We are only interested in processing and storing the moos and alog files
-                    if '._moos' in file or '.alog' in file:
-                        # print('Processing ' + root + file)
+                    # We are only interested in processing and storing the moos, alog, and script files
+                    # We want to store raw versions of these types of files in the S3 bucket
+                    if '._moos' in file:
                         # TODO Store raw file in S3
                         # Open the file as binary data
                         file_data = open(root + '/' + file, 'rb')
                         # Place the file in the bucket
                         s3.Bucket('swarm-logs-bucket').put_object(Key='{}{}'.format(zip_root, file), Body=file_data)
 
-                        # TODO Parse for visualization
-                        parsers.visualization_parser(os.path.join(root + '/', file))
-                        # TODO Store visualization script in S# bucket
+                    # If the file is .alog it needs to be parsed into json and stored in the db
+                    elif '.alog' in file:
+                        # Narwhal alog needs to be parsed for visualization
+                        if 'Narwhal' in file:
+                            # TODO Parse for visualization
+                            parsers.visualization_parser(os.path.join(root + '/', file))
+                            # TODO Store visualization script in S3 bucket
+                            script_data = open(root + '/' + file + '.script', 'rb')
+                            s3.Bucket('swarm-logs-bucket').put_object(Key='{}{}'.format(zip_root, script_data.name), Body=script_data)
+                            # print('Parsed for visualization')
+                        # Store in S3 bucket
+                        file_data = open(root + '/' + file, 'rb')
+                        # Place the file in the bucket
+                        s3.Bucket('swarm-logs-bucket').put_object(Key='{}{}'.format(zip_root, file), Body=file_data)
                         # TODO Parse into json
                         # TODO Store database
 
