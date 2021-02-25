@@ -58,10 +58,11 @@ class LogViewSet(viewsets.ModelViewSet):
                         # Open the file as binary data
                         file_data = open(root + '/' + file, 'rb')
                         # Place the file in the bucket
-                        s3.Bucket('swarm-logs-bucket').put_object(Key=file, Body=file_data)
+                        s3.Bucket('swarm-logs-bucket').put_object(Key='{}{}'.format(zip_root, file), Body=file_data)
 
                         # TODO Parse for visualization
                         parsers.visualization_parser(os.path.join(root + '/', file))
+                        # TODO Store visualization script in S# bucket
                         # TODO Parse into json
                         # TODO Store database
 
