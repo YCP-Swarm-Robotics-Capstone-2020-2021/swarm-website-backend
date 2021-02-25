@@ -40,7 +40,7 @@ CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = [
     config('CORS_ORIGIN_WHITELIST', default="http://localhost:3000"),
     config('CORS_ORIGIN_WHITELIST', default="http://0.0.0.0:8000"),
-    config('CORS_ORIGIN_WHITELIST', default="http://swarmrobotics.io"),
+    config('CORS_ORIGIN_WHITELIST', default="https://swarmrobotics.io"),
     config('CORS_ORIGIN_WHITELIST', default="http://swarm-robotics-env.us-east-1.elasticbeanstalk.com")
 ]
 
