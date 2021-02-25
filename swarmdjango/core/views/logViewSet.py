@@ -4,12 +4,14 @@ from core.serializers import serializers
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from core.logParsers import parsers
 from rest_framework import status
 from zipfile import ZipFile
 from decouple import config
 import os
 import shutil
 import boto3
+
 
 
 class LogViewSet(viewsets.ModelViewSet):
@@ -51,13 +53,15 @@ class LogViewSet(viewsets.ModelViewSet):
                 for file in files:
                     # We are only interested in processing and storing the moos and alog files
                     if '._moos' in file or '.alog' in file:
-                        print('Processing ' + root + file)
+                        # print('Processing ' + root + file)
+                        # TODO Store raw file in S3
                         # Open the file as binary data
                         file_data = open(root + '/' + file, 'rb')
                         # Place the file in the bucket
-                        s3.Bucket('elasticbeanstalk-us-east-1-086806089714').put_object(Key=file, Body=file_data)
-                        # TODO Store raw file in S3
+                        s3.Bucket('swarm-logs-bucket').put_object(Key=file, Body=file_data)
+
                         # TODO Parse for visualization
+                        parsers.visualization_parser(os.path.join(root + '/', file))
                         # TODO Parse into json
                         # TODO Store database
 
