@@ -81,10 +81,12 @@ class LogViewSet(viewsets.ModelViewSet):
 
                         # Store in S3 bucket
                         file_data = open(root + '/' + file, 'rb')
-                        
+
                         # Place the file in the bucket
                         s3.Bucket('swarm-logs-bucket').put_object(Key='{}{}'.format(zip_root, file), Body=file_data)
                         # TODO Parse into json
+                        json_obj = parsers.web_parser(os.path.join(root + '/', file))
+                        print(json_obj)
                         # TODO Store database
 
         # Clean up the files and directories that get created
