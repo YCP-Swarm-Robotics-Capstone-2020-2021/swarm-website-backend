@@ -67,7 +67,9 @@ class LogViewSet(viewsets.ModelViewSet):
                             parsers.visualization_parser(os.path.join(root + '/', file))
                             # TODO Store visualization script in S3 bucket
                             script_data = open(root + '/' + file + '.script', 'rb')
-                            s3.Bucket('swarm-logs-bucket').put_object(Key='{}{}'.format(zip_root, script_data.name), Body=script_data)
+                            # Note that the script name must be split on / to isolate just the script name and not the
+                            # Directory structure
+                            s3.Bucket('swarm-logs-bucket').put_object(Key='{}{}'.format(zip_root, script_data.name.split('/')[-1]), Body=script_data)
                             # print('Parsed for visualization')
                         # Store in S3 bucket
                         file_data = open(root + '/' + file, 'rb')
