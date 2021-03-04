@@ -41,19 +41,23 @@ class LogViewSet(viewsets.ModelViewSet):
         # Open and begin processing the uploaded files
         zip_root = ''
         with ZipFile('upload.zip', 'r') as upload:
+
             # Extract the zip file to access the files
             upload.extractall()
+
             # The log files will be under a common 'root' directory
             zip_root = upload.namelist()[0]
-            print('Processing logs')
+
             # Walk through the upper most directory
             for root, directories, files in os.walk(os.path.join(base_dir, '../' + zip_root)):
+
                 # Iterate through each file in the zip files
                 for file in files:
+
                     # We are only interested in processing and storing the moos, alog, and script files
                     # We want to store raw versions of these types of files in the S3 bucket
                     if '._moos' in file:
-                        # TODO Store raw file in S3
+                        # Store raw file in S3
                         # Open the file as binary data
                         file_data = open(root + '/' + file, 'rb')
                         # Place the file in the bucket
@@ -61,18 +65,23 @@ class LogViewSet(viewsets.ModelViewSet):
 
                     # If the file is .alog it needs to be parsed into json and stored in the db
                     elif '.alog' in file:
+
                         # Narwhal alog needs to be parsed for visualization
                         if 'Narwhal' in file:
-                            # TODO Parse for visualization
+
+                            # Parse for visualization
                             parsers.visualization_parser(os.path.join(root + '/', file))
-                            # TODO Store visualization script in S3 bucket
+
+                            # Store visualization script in S3 bucket
                             script_data = open(root + '/' + file + '.script', 'rb')
+
                             # Note that the script name must be split on / to isolate just the script name and not the
                             # Directory structure
                             s3.Bucket('swarm-logs-bucket').put_object(Key='{}{}'.format(zip_root, script_data.name.split('/')[-1]), Body=script_data)
-                            # print('Parsed for visualization')
+
                         # Store in S3 bucket
                         file_data = open(root + '/' + file, 'rb')
+                        
                         # Place the file in the bucket
                         s3.Bucket('swarm-logs-bucket').put_object(Key='{}{}'.format(zip_root, file), Body=file_data)
                         # TODO Parse into json
