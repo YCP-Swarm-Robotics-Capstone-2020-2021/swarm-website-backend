@@ -10,7 +10,6 @@ def web_parser(file_path):
     # Open the log file in read mode
     file = open(file_path, 'r')
 
-
     # Check to see what type of log file this is, and set log_type and robot_id appropriately
     if "LOG_Narwhal" in file.name:
         print("This is a Narwhal log")
@@ -76,9 +75,9 @@ def web_parser(file_path):
 
     # print(json.dumps(parsed))
     # Open new json file, write the json contents, and close it
-    file = open(file.name + ".json", "w+")
-    file.write(json.dumps(parsed))
-    file.close()
+    # file = open(file.name + ".json", "w+")
+    return json.dumps(parsed)
+
 
 
 # Log parser for visualization script generation
