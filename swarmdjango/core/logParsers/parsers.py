@@ -10,6 +10,7 @@ def web_parser(file_path):
     # Open the log file in read mode
     file = open(file_path, 'r')
 
+
     # Check to see what type of log file this is, and set log_type and robot_id appropriately
     if "LOG_Narwhal" in file.name:
         print("This is a Narwhal log")
@@ -84,7 +85,6 @@ def web_parser(file_path):
 # Currently, this just parses the Narwhal's log file
 def visualization_parser(file_path):
     file = open(file_path, "r")
-
     # To which decimal place should the timestamp be rounded
     TIME_ROUNDING = 1
     # The increment in which the current time should progess when generating the final script.
@@ -239,7 +239,7 @@ def visualization_parser(file_path):
             parsed[time]['updated'] = []
             parsed[time]['notUpdated'] = []
 
-    print(json.dumps(parsed, indent=4))
+    # print(json.dumps(parsed, indent=4))
 
     output = {"timeinc": TIME_INCREMENT, "timeround": TIME_ROUNDING, "timeend": end_time,
               "timestamps": listified_parsed}
