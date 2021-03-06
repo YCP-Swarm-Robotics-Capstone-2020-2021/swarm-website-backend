@@ -1,3 +1,6 @@
+import json
+from datetime import datetime
+
 from django_filters.rest_framework import DjangoFilterBackend
 from core.models import Log
 from core.serializers import serializers
@@ -27,6 +30,7 @@ class LogViewSet(viewsets.ModelViewSet):
     '''
     @action(methods=['post'], detail=False)
     def upload_log_zip(self, request):
+        # Access S3 bucket via the boto3 library. Credentials stored in the env file
         s3 = boto3.resource('s3',
                             aws_access_key_id=config('AWS_ACCESS_KEY'),
                             aws_secret_access_key=config('AWS_SECRET_ACCESS_KEY'))
@@ -84,10 +88,15 @@ class LogViewSet(viewsets.ModelViewSet):
 
                         # Place the file in the bucket
                         s3.Bucket('swarm-logs-bucket').put_object(Key='{}{}'.format(zip_root, file), Body=file_data)
-                        # TODO Parse into json
+
+                        # Parse into json
                         json_obj = parsers.web_parser(os.path.join(root + '/', file))
-                        print(json_obj)
+                        index_json_obj = json.loads(json_obj)
                         # TODO Store database
+                        device_id = index_json_obj['device_id']
+                        date = index_json_obj['date']
+                        time = index_json_obj['time']
+                        date_time = datetime.strptime(date + ' ' + time, '%d-%m-%Y %H:%M:%S')
 
         # Clean up the files and directories that get created
         try:
