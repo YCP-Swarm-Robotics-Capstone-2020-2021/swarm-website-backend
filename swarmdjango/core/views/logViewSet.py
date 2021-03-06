@@ -9,4 +9,4 @@ class LogViewSet(viewsets.ModelViewSet):
     queryset = Log.objects.all()
     serializer_class = serializers.LogSerializer
     filter_backends = (DjangoFilterBackend,)
-    filter_fields = ['dateTime', 'robot', 'run']
+    filter_fields = ['dateTime', 'deviceID', 'runs']
