@@ -93,20 +93,6 @@ class PersonalPageSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-# Robot Serializer
-class RobotSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Robot
-        fields = '__all__'
-
-
-# Run Serializer
-class RunSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Run
-        fields = '__all__'
-
-
 # PhotoGallery serializer
 class PhotoGallerySerializer(serializers.ModelSerializer):
     class Meta:
