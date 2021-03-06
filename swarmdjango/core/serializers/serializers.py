@@ -12,8 +12,6 @@ from core.models import Entry
 from core.models import Heading
 from core.models import Log
 from core.models import PersonalPage
-from core.models import Robot
-from core.models import Run
 from core.models import PhotoGallery
 from core.models import SideBar
 from core.models import Sponsor
