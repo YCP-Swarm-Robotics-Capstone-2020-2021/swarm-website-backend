@@ -33,8 +33,6 @@ from core.views import sponsorPersonalPageViewSet
 from core.views import sponsorViewSet
 from core.views import wikiViewSet
 from core.views import logViewSet
-from core.views import robotViewSet
-from core.views import runViewSet
 from core.views_front import index
 # from django.views.generic import TemplateView
 
@@ -56,8 +54,6 @@ router.register('sponsorpersonalpage', sponsorPersonalPageViewSet.SponsorPersona
 router.register('sponsor', sponsorViewSet.SponsorViewSet, basename='sponsor')
 router.register('wiki', wikiViewSet.WikiViewSet, basename='wiki')
 router.register('log', logViewSet.LogViewSet, basename='log')
-router.register('robot', robotViewSet.RobotViewSet, basename='robot')
-router.register('run', runViewSet.RunViewSet, basename='run')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
