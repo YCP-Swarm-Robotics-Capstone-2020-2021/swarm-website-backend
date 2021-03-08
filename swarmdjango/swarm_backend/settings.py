@@ -98,7 +98,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'swarm_backend.wsgi.application'
 
-
 # connect to postgres container via hostname,
 # this is possible as we are running on a network bridge
 

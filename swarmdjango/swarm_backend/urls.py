@@ -64,9 +64,10 @@ router.register('robot', robotViewSet.RobotViewSet, basename='robot')
 router.register('run', runViewSet.RunViewSet, basename='run')
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/', include(router.urls)),
-    re_path(r'^.*$', index, name='index'),
+    #path('admin/', admin.site.urls),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/', include(router.urls)),
+    re_path(r'^.*$', index, name='index'),
+
 ]

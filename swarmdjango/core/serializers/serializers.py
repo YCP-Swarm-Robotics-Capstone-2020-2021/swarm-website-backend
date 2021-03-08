@@ -135,7 +135,6 @@ class SponsorPersonalPageSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-# User serializer
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
