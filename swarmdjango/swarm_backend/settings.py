@@ -78,6 +78,8 @@ REST_FRAMEWORK = {
     }
 }
 
+AUTH_USER_MODEL = 'core.User'
+
 ROOT_URLCONF = 'swarm_backend.urls'
 
 TEMPLATES = [

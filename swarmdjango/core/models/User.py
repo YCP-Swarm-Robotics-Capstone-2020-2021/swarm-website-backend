@@ -1,6 +1,9 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-class User(models.Model):
+
+# https://docs.djangoproject.com/en/3.1/topics/auth/customizing/#auth-custom-user
+class User(AbstractUser):
     username = models.TextField()
     password = models.TextField()
     email = models.EmailField()
