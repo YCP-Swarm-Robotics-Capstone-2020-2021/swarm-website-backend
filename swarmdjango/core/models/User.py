@@ -6,4 +6,4 @@ class User(models.Model):
     email = models.EmailField()
     firstName = models.TextField()
     lastName = models.TextField()
-    accountLevel = models.IntegerField(default=0);
+    accountLevel = models.IntegerField(default=0)
