@@ -3,7 +3,6 @@ import re
 import json
 import sys
 
-
 # Log parser for the web application
 # Parameter is the file path of the log
 def web_parser(file_path):
@@ -57,6 +56,11 @@ def web_parser(file_path):
         "log_content": []
     }
 
+    runs = []
+
+    # Current run is outside the scope of the for loop, since it needs to persist each iteration
+    current_run = ''
+
     for line in itertools.islice(file, 5, None):
         line = line.rstrip()
         # Each line is composed of <timestamp> <module> <process> <data>
@@ -70,14 +74,40 @@ def web_parser(file_path):
 
         parsed['log_content'].append(parsed_line)
 
+        # Check to see if the current line is a start of stop marker for a run
+        # If the current run is empty, then start filling out the current run
+        if parsed_line['module'] == 'RUN_STARTED' and current_run == '':
+
+            # Parse id and place in current run
+            run_id = int(re.findall(r'[0-9]+', parsed_line['data'])[0])
+            print(run_id)
+            # noinspection PyDictCreation
+            current_run = {
+                run_id: {
+                    'start_time': parsed_line['time'],
+                    'stop_time': ''
+                }
+            }
+
+        elif parsed_line['module'] == 'RUN_ENDED' and current_run != '':
+
+            # Parse stop time
+            run_id = int(re.findall(r'[0-9]+', parsed_line['data'])[0])
+            print(run_id)
+            current_run[run_id]['stop_time'] = parsed_line['time']
+
+            # Append current run to runs list, and clear the current run
+            runs.append(current_run)
+            current_run = ''
+
     # Close log file
     file.close()
 
     # print(json.dumps(parsed))
     # Open new json file, write the json contents, and close it
     # file = open(file.name + ".json", "w+")
-    return json.dumps(parsed)
-
+    # print(json.dumps(runs))
+    return json.dumps(parsed), json.dumps(runs)
 
 
 # Log parser for visualization script generation
