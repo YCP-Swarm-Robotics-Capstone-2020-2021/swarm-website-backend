@@ -90,8 +90,9 @@ class LogViewSet(viewsets.ModelViewSet):
                         s3.Bucket('swarm-logs-bucket').put_object(Key='{}{}'.format(zip_root, file), Body=file_data)
 
                         # Parse into json
-                        json_obj = parsers.web_parser(os.path.join(root + '/', file))
+                        json_obj, runs_obj = parsers.web_parser(os.path.join(root + '/', file))
                         index_json_obj = json.loads(json_obj)
+                        index_runs = json.loads(runs_obj)
                         # TODO Store database
                         device_id = index_json_obj['device_id']
                         date = index_json_obj['date']
