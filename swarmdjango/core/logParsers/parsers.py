@@ -3,8 +3,6 @@ import re
 import json
 import sys
 
-fp = '../test_logs/Run_Allstop/2021-02-25-07-14-50_Mission_Numbots-4/LOG_Dolphin0_25_2_2021_____07_14_52/LOG_Dolphin0_25_2_2021_____07_14_52.alog'
-
 
 # Log parser for the web application
 # Parameter is the file path of the log
@@ -131,19 +129,14 @@ def web_parser(file_path):
 
     # print(json.dumps(parsed))
     # Open new json file, write the json contents, and close it
-    file = open(file.name + ".json", "w+")
-    file.write(json.dumps(runs[0]))
-    # return json.dumps(parsed), json.dumps(runs)
-
-
-
+    # file = open(file.name + ".json", "w+")
+    # file.write(json.dumps(runs[0]))
+    return json.dumps(parsed), json.dumps(runs)
 
 
 # This function defines what to sort the list on. The tuple has the timestamp in the first position
 def sort_on(e):
     return float(e[0])
-
-web_parser(fp)
 
 # Log parser for visualization script generation
 # Currently, this just parses the Narwhal's log file
