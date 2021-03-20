@@ -3,6 +3,7 @@ from datetime import datetime
 
 from django_filters.rest_framework import DjangoFilterBackend
 from core.models import Log
+from core.models import Run
 from core.serializers import serializers
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -93,11 +94,23 @@ class LogViewSet(viewsets.ModelViewSet):
                         json_obj, runs_obj = parsers.web_parser(os.path.join(root + '/', file))
                         index_json_obj = json.loads(json_obj)
                         index_runs = json.loads(runs_obj)
-                        # TODO Store database
+
+                        # Create pieces of objects to store them in the DB
                         device_id = index_json_obj['device_id']
+                        file_path = zip_root + file
                         date = index_json_obj['date']
                         time = index_json_obj['time']
                         date_time = datetime.strptime(date + ' ' + time, '%d-%m-%Y %H:%M:%S')
+
+                        # Create the log object first, so it can be used in the run objects
+                        log_obj = Log(dateTime=date_time, deviceID=device_id, filePath=file_path, log=index_json_obj)
+                        log_obj.save()
+
+                        # Iterate through the returned runs and store each in the DB
+                        for i in index_runs:
+                            run_id = list(i.keys())[0]
+                            run_obj = Run(dateTime=date_time, deviceID=device_id, runID=run_id, logID=log_obj, run=i[run_id]['run_content'])
+                            run_obj.save()
 
         # Clean up the files and directories that get created
         try:
