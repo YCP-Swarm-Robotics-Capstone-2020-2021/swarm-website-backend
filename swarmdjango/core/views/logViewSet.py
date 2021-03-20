@@ -20,7 +20,7 @@ class LogViewSet(viewsets.ModelViewSet):
     queryset = Log.objects.all()
     serializer_class = serializers.LogSerializer
     filter_backends = (DjangoFilterBackend,)
-    filter_fields = ['dateTime', 'robot', 'run']
+    filter_fields = ['dateTime', 'deviceID', 'runs']
 
     '''
     This method accepts a zip of log files from an http POST request.
@@ -115,4 +115,5 @@ class LogViewSet(viewsets.ModelViewSet):
 
         # Return the response
         return Response({"Message": "Uploaded."})
+
 
