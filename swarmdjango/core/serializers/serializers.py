@@ -11,6 +11,7 @@ from core.models import DevPersonalPage
 from core.models import Entry
 from core.models import Heading
 from core.models import Log
+from core.models import Run
 from core.models import PersonalPage
 from core.models import PhotoGallery
 from core.models import SideBar
@@ -81,6 +82,13 @@ class HeadingSerializer(serializers.ModelSerializer):
 class LogSerializer(serializers.ModelSerializer):
     class Meta:
         model = Log
+        fields = '__all__'
+
+
+# Run Serializer
+class RunSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Run
         fields = '__all__'
 
 
