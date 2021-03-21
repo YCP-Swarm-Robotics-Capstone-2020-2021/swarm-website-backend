@@ -21,7 +21,7 @@ class LogViewSet(viewsets.ModelViewSet):
     queryset = Log.objects.all()
     serializer_class = serializers.LogSerializer
     filter_backends = (DjangoFilterBackend,)
-    filter_fields = ['dateTime', 'deviceID', 'runs']
+    filter_fields = ['dateTime', 'deviceID', 'filePath']
 
     '''
     This method accepts a zip of log files from an http POST request.
@@ -107,10 +107,11 @@ class LogViewSet(viewsets.ModelViewSet):
                         log_obj.save()
 
                         # Iterate through the returned runs and store each in the DB
-                        for i in index_runs:
-                            run_id = list(i.keys())[0]
-                            run_obj = Run(dateTime=date_time, deviceID=device_id, runID=run_id, logID=log_obj, run=i[run_id]['run_content'])
-                            run_obj.save()
+                        if len(index_runs) > 0:
+                            for i in index_runs:
+                                run_id = list(i.keys())[0]
+                                run_obj = Run(dateTime=date_time, deviceID=device_id, runID=run_id, logID=log_obj, run=i[run_id]['run_content'])
+                                run_obj.save()
 
         # Clean up the files and directories that get created
         try:
