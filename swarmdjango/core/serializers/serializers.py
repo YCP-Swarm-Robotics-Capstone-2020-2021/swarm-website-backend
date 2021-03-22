@@ -141,19 +141,6 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = '__all__'
 
-    # def create(self, validated_data):
-    #     password = make_password(validated_data['password'])
-    #
-    #     (obj, created) = User.objects.get_or_create(
-    #         username=validated_data['username'],
-    #         email=validated_data['email'],
-    #         firstName=validated_data['firstName'],
-    #         lastName=validated_data['lastName'],
-    #         defaults={"password": password}
-    #     )
-    #     return obj
-
-
 # Wiki serializer
 class WikiSerializer(serializers.ModelSerializer):
     class Meta:
