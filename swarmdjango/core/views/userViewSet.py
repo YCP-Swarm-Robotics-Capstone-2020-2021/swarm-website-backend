@@ -4,7 +4,6 @@ from django.contrib.auth.hashers import check_password
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
 
-
 from django.contrib.auth.models import User
 from rest_framework import viewsets
 from rest_framework import permissions
@@ -12,8 +11,8 @@ from core.serializers import serializers
 from rest_framework.decorators import action
 from rest_framework import status
 
-class UserViewSet(viewsets.ModelViewSet):
 
+class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = serializers.UserSerializer
     filter_backends = DjangoFilterBackend
@@ -58,7 +57,4 @@ class UserViewSet(viewsets.ModelViewSet):
         except IndexError:
             return Response({"Error": "Record does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
-        return Response({"Status": True,}, status=status.HTTP_200_OK)
-
-
-
+        return Response({"Status": True, }, status=status.HTTP_200_OK)
