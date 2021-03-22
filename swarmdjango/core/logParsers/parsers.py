@@ -13,11 +13,11 @@ def web_parser(file_path):
 
     # Check to see what type of log file this is, and set log_type and robot_id appropriately
     if "LOG_Narwhal" in file.name:
-        print("This is a Narwhal log")
+        # print("This is a Narwhal log")
         log_type = "Narwhal"
         device_id = "Narwhal"
     elif "LOG_Dolphin" in file.name:
-        print("This is a Dolphin log")
+        # print("This is a Dolphin log")
         log_type = "Dolphin"
         # Extract dolphin id
         robot_match = re.search(r'Dolphin\d+', file.name)
@@ -25,11 +25,11 @@ def web_parser(file_path):
         try:
             device_id = robot_match.group(0)
         except AttributeError:
-            print('Error finding robot id from file name')
+            # print('Error finding robot id from file name')
             sys.exit(1)
     # If the log does not contain dolphin or narwhal exit the parser
     else:
-        print('Log neither Dolphin nor Narwhal')
+        # print('Log neither Dolphin nor Narwhal')
         sys.exit(1)
 
     # Parse date and time from file path
