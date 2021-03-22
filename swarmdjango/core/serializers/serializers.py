@@ -17,8 +17,8 @@ from core.models import PhotoGallery
 from core.models import SideBar
 from core.models import Sponsor
 from core.models import SponsorPersonalPage
-from core.models import User
 from core.models import Wiki
+from django.contrib.auth.models import User, Group
 
 
 # Admin serializer
@@ -120,6 +120,7 @@ class SponsorSerializer(serializers.ModelSerializer):
         model = Sponsor
         fields = '__all__'
 
+
 # SponsorPersonalPage serializer
 class SponsorPersonalPageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -131,19 +132,7 @@ class SponsorPersonalPageSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = '__all__'
-
-    def create(self, validated_data):
-        password = make_password(validated_data['password'])
-
-        (obj, created) = User.objects.get_or_create(
-            username=validated_data['username'],
-            email=validated_data['email'],
-            firstName=validated_data['firstName'],
-            lastName=validated_data['lastName'],
-            defaults={"password": password}
-        )
-        return obj
+        fields = 'username', 'first_name', 'last_name', 'email', 'password', 'is_active'
 
 
 # Wiki serializer
