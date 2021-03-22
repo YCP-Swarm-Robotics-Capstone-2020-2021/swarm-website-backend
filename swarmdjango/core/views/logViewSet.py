@@ -128,6 +128,6 @@ class LogViewSet(viewsets.ModelViewSet):
                 break
 
         # Return the response
-        return Response({"Message": "Uploaded."})
+        return Response({"Status": "Uploaded Successfully."}, status=status.HTTP_200_OK)
 
 
