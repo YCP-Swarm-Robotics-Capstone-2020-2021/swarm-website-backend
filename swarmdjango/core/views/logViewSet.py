@@ -10,7 +10,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from core.logParsers import parsers
 from rest_framework import status
-from zipfile import ZipFile, BadZipFile
+from zipfile import ZipFile
 from decouple import config
 import os
 import shutil
@@ -31,13 +31,13 @@ class LogViewSet(viewsets.ModelViewSet):
     '''
     @action(methods=['post'], detail=False)
     def upload_log_zip(self, request):
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        zip_root = ''
         try:
             # Access S3 bucket via the boto3 library. Credentials stored in the env file
             s3 = boto3.resource('s3',
                                 aws_access_key_id=config('AWS_ACCESS_KEY'),
                                 aws_secret_access_key=config('AWS_SECRET_ACCESS_KEY'))
-
-            base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
             # Write the request bytes to destination of 'upload.zip'
             with open('upload.zip', 'wb+') as destination:
@@ -45,7 +45,6 @@ class LogViewSet(viewsets.ModelViewSet):
                     destination.write(chunk)
 
             # Open and begin processing the uploaded files
-                zip_root = ''
                 with ZipFile('upload.zip', 'r') as upload:
 
                     # Extract the zip file to access the files
