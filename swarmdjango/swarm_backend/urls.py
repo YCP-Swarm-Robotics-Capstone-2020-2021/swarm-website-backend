@@ -36,6 +36,11 @@ from core.views import logViewSet
 from core.views_front import index
 # from django.views.generic import TemplateView
 
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+
 router = routers.DefaultRouter(trailing_slash= False)
 
 # Route view sets via the router
@@ -58,5 +63,7 @@ router.register('log', logViewSet.LogViewSet, basename='log')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
+    path('api/token', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh', TokenRefreshView.as_view(), name='token_refresh'),
     re_path(r'^.*$', index, name='index'),
 ]

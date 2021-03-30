@@ -27,7 +27,6 @@ SECRET_KEY = config('SECRET_KEY', default="secretkeyorsomethin")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-
 ALLOWED_HOSTS = [
     config('ALLOWED_HOST', default='0.0.0.0'),
     'localhost',
@@ -43,7 +42,6 @@ CORS_ORIGIN_WHITELIST = [
     config('CORS_ORIGIN_WHITELIST', default="https://swarmrobotics.io"),
     config('CORS_ORIGIN_WHITELIST', default="http://swarm-robotics-env.us-east-1.elasticbeanstalk.com")
 ]
-
 
 # Application definition
 
@@ -92,7 +90,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'swarm_backend.wsgi.application'
 
-
 # connect to postgres container via hostname,
 # this is possible as we are running on a network bridge
 
@@ -122,7 +119,6 @@ except UndefinedValueError:
         }
     }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
@@ -141,7 +137,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
@@ -155,7 +150,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
@@ -166,10 +160,10 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "build/static")
 ]
 
-# This disables the browsable aspect of the api
-# REST_FRAMEWORK = {
-#     # Only enable JSON renderer by default.
-#     'DEFAULT_RENDERER_CLASSES': [
-#         'rest_framework.renderers.JSONRenderer',
-#     ],
-# }
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+
+AUTH_USER_MODEL = "core.User"
