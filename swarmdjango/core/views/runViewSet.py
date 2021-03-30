@@ -18,7 +18,10 @@ class RunViewSet(viewsets.ModelViewSet):
     def get_run_json(self, request):
         queryset = Run.objects.all()
         run_id = request.query_params.get('id')
-        run_obj = queryset.filter(id=run_id)[0]
-        # run_obj = run_obj[0]
-        serialized_run = serializers.RunSerializer(run_obj, fields=('id', 'dateTime', 'deviceID', 'runID', 'logID', 'run'))
-        return Response({"Success": serialized_run.data}, status=status.HTTP_200_OK)
+        try:
+            run_obj = queryset.filter(id=run_id)[0]
+            serialized_run = serializers.RunSerializer(run_obj, fields=('id', 'dateTime', 'deviceID', 'runID', 'logID', 'run'))
+        except IndexError:
+            return Response({"Error": "Record does not exist"}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response({"Success": serialized_run.data}, status=status.HTTP_200_OK)

@@ -136,9 +136,12 @@ class LogViewSet(viewsets.ModelViewSet):
     def get_log_json(self, request):
         queryset = Log.objects.all()
         log_id = request.query_params.get('id')
-        log_obj = queryset.filter(id=log_id)
-        log_obj = log_obj[0]
-        serialized_log = serializers.LogSerializer(log_obj, fields=('id', 'dateTime', 'deviceID', 'filePath', 'log'))
-        return Response({"Success": serialized_log.data}, status=status.HTTP_200_OK)
+        try:
+            log_obj = queryset.filter(id=log_id)[0]
+            serialized_log = serializers.LogSerializer(log_obj, fields=('id', 'dateTime', 'deviceID', 'filePath', 'log'))
+        except IndexError:
+            return Response({"Error": "Record does not exist"}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response({"Success": serialized_log.data}, status=status.HTTP_200_OK)
 
 
