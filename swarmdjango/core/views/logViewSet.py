@@ -21,7 +21,7 @@ class LogViewSet(viewsets.ModelViewSet):
     queryset = Log.objects.all()
     serializer_class = serializers.LogSerializer
     filter_backends = (DjangoFilterBackend,)
-    filter_fields = ['dateTime', 'deviceID', 'filePath']
+    filter_fields = ['id', 'dateTime', 'deviceID', 'filePath']
 
     '''
     This method accepts a zip of log files from an http POST request.
@@ -132,6 +132,13 @@ class LogViewSet(viewsets.ModelViewSet):
                     shutil.rmtree(os.path.join(base_dir, '../__MACOSX'))
                     break
 
-
+    @action(methods=['get'], detail=False)
+    def get_log_json(self, request):
+        queryset = Log.objects.all()
+        log_id = request.query_params.get('id')
+        log_obj = queryset.filter(id=log_id)
+        log_obj = log_obj[0]
+        serialized_log = serializers.LogSerializer(log_obj, fields=('id', 'dateTime', 'deviceID', 'filePath', 'log'))
+        return Response({"Success": serialized_log.data}, status=status.HTTP_200_OK)
 
 
