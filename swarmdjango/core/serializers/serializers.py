@@ -85,7 +85,6 @@ class DynamicLogSerializer(serializers.ModelSerializer):
     """
 
     def __init__(self, *args, **kwargs):
-        from django.contrib.postgres.fields import JSONField
         # Don't pass the 'fields' arg up to the superclass
         fields = kwargs.pop('fields', None)
 
