@@ -8,7 +8,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     firstName = models.CharField(max_length=20, blank=True)
     lastName = models.TextField(max_length=20, blank=True)
-    accountLevel = models.IntegerField(default=0);
+    accountLevel = models.IntegerField(default=0)
     isActive = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'

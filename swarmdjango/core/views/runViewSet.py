@@ -9,4 +9,4 @@ class RunViewSet(viewsets.ModelViewSet):
     queryset = Run.objects.all()
     serializer_class = serializers.RunSerializer
     filter_backends = (DjangoFilterBackend,)
-    filter_fields = '__all__'
+    filter_fields = ['dateTime', 'deviceID', 'runID', 'logID']
