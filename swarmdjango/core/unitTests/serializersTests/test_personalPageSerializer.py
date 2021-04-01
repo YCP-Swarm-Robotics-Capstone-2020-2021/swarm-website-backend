@@ -6,6 +6,7 @@ from django.test import TestCase
 class PersonalPageSerializerTest(TestCase):
     def setUp(self):
         self.personalPageAttribs = {
+            'id': 0,
             'pageType': 'Sponsor page',
             'pageTitle': 'Test Sponsor Page'
         }

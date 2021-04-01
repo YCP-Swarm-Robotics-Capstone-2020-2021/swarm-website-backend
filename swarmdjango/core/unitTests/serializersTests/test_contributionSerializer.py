@@ -7,6 +7,7 @@ class ContributionSerializerTest(TestCase):
 
     def setUp(self):
         self.contributionAttribs = {
+            'id': 0,
             'link': 'link to wiki page',
             'description': 'short description',
             'fileName': 'filename',

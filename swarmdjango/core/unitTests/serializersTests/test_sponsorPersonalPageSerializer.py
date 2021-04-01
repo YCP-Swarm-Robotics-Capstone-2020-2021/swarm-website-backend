@@ -6,6 +6,9 @@ from django.test import TestCase
 class SponsorPersonalPageTest(TestCase):
     def setUp(self):
         self.pageAttribs = {
+            'id': 0,
+            'pageType': 'Sponsor page',
+            'pageTitle': 'Test Sponsor Page',
             'missionStatement': 'Test statement',
             'reasonForSponsorship': 'Test reason for sponsor',
             'companyLink': 'https://company.com'

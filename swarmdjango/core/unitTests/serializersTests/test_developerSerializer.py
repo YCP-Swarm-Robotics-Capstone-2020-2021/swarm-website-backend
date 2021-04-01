@@ -13,6 +13,13 @@ class DeveloperSerializerTest(TestCase):
         self.personalPage = PersonalPage.objects.create(**self.personalPageAttribs)
 
         self.developerAttribs = {
+            'id': 0,
+            'email': 'test@gmail.com',
+            'username': 'tester',
+            'password': 'testpass',
+            'firstName': 'Test',
+            'lastName': 'Testineer',
+            'accountLevel': 1,
             'teamRole': 'software engineer',
             'page': self.personalPage,
         }

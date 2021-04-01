@@ -18,6 +18,7 @@ class ChangeSerializerTest(TestCase):
         self.user = User.objects.create(**self.userAttribs)
 
         self.changeAttribs = {
+            'id': 0,
             'user': self.user,
             'dateTime': datetime.datetime.now(),
             'context': 'Nonexistent',

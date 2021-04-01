@@ -5,6 +5,7 @@ from django.test import TestCase
 class SideBarSerializerTest(TestCase):
     def setUp(self):
         self.sideBarAttribs = {
+            'id': 0,
             'content': {
                 'content': 'content'
             }

@@ -17,6 +17,7 @@ class PhotoGallerySerializerTest(TestCase):
         self.user = User.objects.create(**self.userAttribs)
 
         self.photoGalleryAttribs = {
+            'id': 0,
             'fileName': 'Test/File/name',
             'caption': 'Test caption',
             'uploadedBy': self.user

@@ -7,12 +7,13 @@ class AdminSerializerTest(TestCase):
 
     def setUp(self):
         self.adminAttribs = {
+            'id': 0,
             'email': 'test@gmail.com',
             'lastName': 'Testineer',
             'firstName': 'Test',
             'password': 'password1',
             'username': 'test6',
-            'id': '1',
+            'accountLevel': '1',
             'receiveUpdates': 'True',
         }
 
