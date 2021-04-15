@@ -65,9 +65,15 @@ def web_parser(file_path):
     # Read the file, and place the tuples of the lines in the set
     for line in itertools.islice(file, 5, None):
         line = line.rstrip()
-        # Each line is composed of <timestamp> <module> <process> <data>
-        (time, module, process, data) = line.split(maxsplit=3)
-        parsed_set.add((time, module, process, data))
+        try:
+            # Each line is composed of <timestamp> <module> <process> <data>
+            (time, module, process, data) = line.split(maxsplit=3)
+            if '\u0000' in line:
+                data = data.split('\u0000')[0]
+            parsed_set.add((time, module, process, data))
+            # print("Timestamp:    {}".format(time))
+        except ValueError as e:
+            pass
 
     # Convert set to list, then sort
     parsed_list = list(parsed_set)
