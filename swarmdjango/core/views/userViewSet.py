@@ -2,6 +2,7 @@ import json
 
 from django.contrib.auth.hashers import check_password
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from core.serializers import serializers
@@ -13,6 +14,7 @@ from rest_framework import status
 
 
 class UserViewSet(viewsets.ModelViewSet):
+    permission_classes = [AllowAny]
 
     queryset = User.objects.all()
     serializer_class = serializers.UserSerializer

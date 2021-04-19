@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 from django.core.exceptions import ImproperlyConfigured
 from decouple import config
 from decouple import UndefinedValueError
+from datetime import timedelta
 import os
 
 # Quick-start development settings - unsuitable for production
@@ -179,3 +180,19 @@ REST_FRAMEWORK = {
 }
 
 AUTH_USER_MODEL = "core.User"
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=14),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': False,
+
+    'ALGORITHM': 'HS256',
+
+    'AUTH_HEADER_TYPES': ('Bearer',),
+
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type',
+
+}

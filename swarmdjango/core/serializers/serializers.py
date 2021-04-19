@@ -1,5 +1,6 @@
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
+from rest_framework.permissions import AllowAny
 
 # Model Imports
 from core.models import Admin
@@ -179,6 +180,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data):
+        permission_classes = [AllowAny]
         password = make_password(validated_data['password'])
 
         (obj, created) = User.objects.get_or_create(
