@@ -27,12 +27,12 @@ class UserViewSet(viewsets.ModelViewSet):
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
 
-        username = body['username']
+        email = body['email']
         password = body['password']
 
         queryset = User.objects.all()
 
-        user = queryset.filter(username=username)
+        user = queryset.filter(email=email)
 
         try:
             user_serialized = serializers.UserSerializer(user[0])
@@ -49,17 +49,17 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(detail=False)
     def find_user(self, request):
-        username = self.request.query_params.get('username')
+        email = self.request.query_params.get('email')
         queryset = User.objects.all()
 
-        user = queryset.filter(username=username)
+        user = queryset.filter(email=email)
 
         try:
             serializers.UserSerializer(user[0])
         except IndexError:
             return Response({"Error": "Record does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
-        return Response({"Status": True,}, status=status.HTTP_200_OK)
+        return Response({"Status": True}, status=status.HTTP_200_OK)
 
 
 
