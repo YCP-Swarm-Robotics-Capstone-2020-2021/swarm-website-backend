@@ -59,7 +59,7 @@ class UserViewSet(viewsets.ModelViewSet):
         except IndexError:
             return Response({"Error": "Record does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
-        return Response({"Status": True}, status=status.HTTP_200_OK)
+        return Response({"Status": True, "username": user[0].username}, status=status.HTTP_200_OK)
 
 
 
