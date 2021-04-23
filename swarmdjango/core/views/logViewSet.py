@@ -148,16 +148,4 @@ class LogViewSet(viewsets.ModelViewSet):
                     shutil.rmtree(os.path.join(base_dir, '../__MACOSX'))
                     break
 
-    @action(methods=['get'], detail=False)
-    def get_log_json(self, request):
-        queryset = Log.objects.all()
-        log_id = request.query_params.get('id')
-        try:
-            log_obj = queryset.filter(id=log_id)[0]
-            serialized_log = serializers.LogSerializer(log_obj, fields=('id', 'dateTime', 'deviceID', 'filePath', 'log'))
-        except IndexError:
-            return Response({"Error": "Record does not exist"}, status=status.HTTP_404_NOT_FOUND)
-        else:
-            return Response({"Success": serialized_log.data}, status=status.HTTP_200_OK)
-
 
