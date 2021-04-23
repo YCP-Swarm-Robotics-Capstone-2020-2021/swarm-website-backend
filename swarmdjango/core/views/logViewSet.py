@@ -72,23 +72,25 @@ class LogViewSet(viewsets.ModelViewSet):
                                         s3.Bucket('swarm-logs-bucket').put_object(Key='{}{}{}'.format(zip_root, directory+'/', dir_file), Body=file_data)
 
                                 # If the file is .alog it needs to be parsed into json and stored in the db
-                                elif '.alog' in dir_file:
+                                if '.alog' in dir_file:
 
                                     # Narwhal alog needs to be parsed for visualization
                                     # if 'Narwhal' in dir_file:
-
-                                        # Parse for visualization
-                                        # parsers.visualization_parser(os.path.join(base_dir, dir_root + '/' + dir_file))
-
-                                        # Store visualization script in S3 bucket
-                                        # with open(os.path.join(base_dir, dir_root + '/' + dir_file + '.script'), 'rb') as script_data:
-                                            # Note that the script name must be split on / to isolate just the script name and not the
-                                            # Directory structure
-                                            # s3.Bucket('swarm-logs-bucket').put_object(Key='{}{}'.format(zip_root + dir_root, script_data.name.split('/')[-1]), Body=script_data)
-
+                                    #
+                                    #     # Parse for visualization
+                                    #     parsers.visualization_parser(os.path.join(base_dir, dir_root + '/' + dir_file))
+                                    #
+                                    #     # Store visualization script in S3 bucket
+                                    #     with open(os.path.join(base_dir, dir_root + '/' + dir_file + '.script'), 'rb') as script_data:
+                                    #         # Note that the script name must be split on / to isolate just the script name and not the
+                                    #         # Directory structure
+                                    #         s3.Bucket('swarm-logs-bucket').put_object(Key='{}{}{}'.format(zip_root, directory +'/', script_data.name.split('/')[-1]), Body=script_data)
+                                    index_runs = ''
+                                    prev_log_obj = ''
                                     # Store in S3 bucket
                                     with open(os.path.join(base_dir, dir_root + '/' + dir_file), 'rb') as file_data:
-                                        # Place the file in the bucket
+
+                                        # Place the un-parsed file in the bucket
                                         s3.Bucket('swarm-logs-bucket').put_object(Key='{}{}{}'.format(zip_root, directory+'/', dir_file), Body=file_data)
 
                                         # Parse into json
@@ -98,21 +100,34 @@ class LogViewSet(viewsets.ModelViewSet):
 
                                         # Create pieces of objects to store them in the DB
                                         device_id = index_json_obj['device_id']
-                                        file_path = zip_root + directory + '/' + dir_file
+                                        file_path = zip_root + directory + '/' + dir_file + '.json'
+                                        # print(file_path)
                                         date = index_json_obj['date']
                                         time = index_json_obj['time']
+
+                                        # TODO specify timezone
                                         date_time = datetime.strptime(date + ' ' + time, '%d-%m-%Y %H:%M:%S')
 
                                         # Create the log object first, so it can be used in the run objects
-                                        log_obj = Log(dateTime=date_time, deviceID=device_id, filePath=file_path, log=index_json_obj)
+                                        log_obj = Log(dateTime=date_time, deviceID=device_id, filePath=file_path)
                                         log_obj.save()
+                                        prev_log_obj = log_obj
 
-                                        # Iterate through the returned runs and store each in the DB
-                                        if len(index_runs) > 0:
-                                            for i in index_runs:
-                                                run_id = list(i.keys())[0]
-                                                run_obj = Run(dateTime=date_time, deviceID=device_id, runID=run_id, logID=log_obj, run=i[run_id]['run_content'])
-                                                run_obj.save()
+                                    # Iterate through the returned runs and store each in the DB
+                                    if index_runs != '':
+                                        for i in index_runs:
+                                            run_id = i['run_id']
+                                            run_fp = zip_root + directory+'/' + dir_file + f'-run{run_id}.json'
+
+                                            run_obj = Run(dateTime=date_time, deviceID=device_id, runID=run_id, logID=prev_log_obj, filePath=run_fp)
+                                            run_obj.save()
+
+                                            with open(os.path.join(base_dir, dir_root + '/' + dir_file + f'-run{run_id}.json'), 'rb') as run_file:
+                                                s3.Bucket('swarm-logs-bucket').put_object(Key='{}{}{}'.format(zip_root, directory + '/', run_file.name.split('/')[-1]), Body=run_file)
+
+                                    # Open and place the parsed json file in the bucket
+                                    with open(os.path.join(base_dir, dir_root + '/' + dir_file + '.json'), 'rb') as json_file:
+                                        s3.Bucket('swarm-logs-bucket').put_object(Key='{}{}{}'.format(zip_root, directory + '/',json_file.name.split('/')[-1]),Body=json_file)
         except Exception as e:
             return Response({"Status": "Upload Failed. {}".format(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
