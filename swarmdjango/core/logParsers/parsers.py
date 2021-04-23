@@ -65,9 +65,15 @@ def web_parser(file_path):
     # Read the file, and place the tuples of the lines in the set
     for line in itertools.islice(file, 5, None):
         line = line.rstrip()
-        # Each line is composed of <timestamp> <module> <process> <data>
-        (time, module, process, data) = line.split(maxsplit=3)
-        parsed_set.add((time, module, process, data))
+        try:
+            # Each line is composed of <timestamp> <module> <process> <data>
+            (time, module, process, data) = line.split(maxsplit=3)
+            # Check for null character
+            if '\u0000' in line:
+                data = data.split('\u0000')[0]
+            parsed_set.add((time, module, process, data))
+        except ValueError as e:
+            print("Key Value Error")
 
     # Convert set to list, then sort
     parsed_list = list(parsed_set)
@@ -97,11 +103,10 @@ def web_parser(file_path):
 
             # noinspection PyDictCreation
             current_run = {
-                current_run_id: {
-                    'start_time': parsed_line['time'],
-                    'stop_time': '',
-                    'run_content': []
-                }
+                'run_id': current_run_id,
+                'start_time': parsed_line['time'],
+                'stop_time': '',
+                'run_content': []
             }
 
             # Start recording the run
@@ -110,10 +115,10 @@ def web_parser(file_path):
         elif parsed_line['module'] == 'RUN_ENDED' and current_run != '':
 
             # Parse stop time
-            current_run[current_run_id]['stop_time'] = parsed_line['time']
+            current_run['stop_time'] = parsed_line['time']
 
             # Append stop line to run
-            current_run[current_run_id]['run_content'].append(parsed_line)
+            current_run['run_content'].append(parsed_line)
 
             # Append current run to runs list, and clear the current run
             runs.append(current_run)
@@ -122,15 +127,30 @@ def web_parser(file_path):
 
         if record_run:
             # Append stop line to run
-            current_run[current_run_id]['run_content'].append(parsed_line)
+            current_run['run_content'].append(parsed_line)
 
     # Close log file
     file.close()
 
-    # print(json.dumps(parsed))
     # Open new json file, write the json contents, and close it
-    # file = open(file.name + ".json", "w+")
-    # file.write(json.dumps(runs[0]))
+    with open(file_path + ".json", "w+") as file:
+        file.write(json.dumps(parsed))
+    # Return the information on the log for storing in DB
+    try:
+        del parsed['log_content']
+    except KeyError:
+        print('Error removing log_content from dict')
+    # print(json.dumps(parsed))
+
+    for run in runs:
+        run_key = run['run_id']
+        with open(file_path + f"-run{run_key}.json", "w+") as file:
+            file.write(json.dumps(run))
+            try:
+                del run['run_content']
+            except KeyError:
+                print('Error removing run_content from dict')
+            # print(json.dumps(run))
     return json.dumps(parsed), json.dumps(runs)
 
 
@@ -160,6 +180,9 @@ def visualization_parser(file_path):
         line = line.rstrip()
         # Each line is composed of <timestamp> <module> <process> <data>
         (time, module, _, data) = line.split(maxsplit=3)
+        # Check for null character
+        if '\u0000' in line:
+            data = data.split('\u0000')[0]
         time = round(float(time), TIME_ROUNDING)
         end_time = time
 
