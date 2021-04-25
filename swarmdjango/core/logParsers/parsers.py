@@ -76,12 +76,12 @@ def web_parser(file_path):
             print("Key Value Error")
 
     # Convert set to list, then sort
+
     parsed_list = list(parsed_set)
     parsed_list.sort(key=sort_on)
 
     # Current run is outside the scope of the for loop, since it needs to persist each iteration
     current_run = ''
-    current_run_id = -111
     record_run = False
 
     # Iterate sorted list and created json objects
