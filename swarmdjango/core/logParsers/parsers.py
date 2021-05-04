@@ -109,6 +109,9 @@ def web_parser(file_path):
                 'run_content': []
             }
 
+            # Append current run to runs list, and clear the current run
+            runs.append(current_run)
+
             # Start recording the run
             record_run = True
 
@@ -120,8 +123,6 @@ def web_parser(file_path):
             # Append stop line to run
             current_run['run_content'].append(parsed_line)
 
-            # Append current run to runs list, and clear the current run
-            runs.append(current_run)
             current_run = ''
             record_run = False
 
