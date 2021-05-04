@@ -85,8 +85,6 @@ class LogViewSet(viewsets.ModelViewSet):
                                     #         # Note that the script name must be split on / to isolate just the script name and not the
                                     #         # Directory structure
                                     #         s3.Bucket('swarm-logs-bucket').put_object(Key='{}{}{}'.format(zip_root, directory +'/', script_data.name.split('/')[-1]), Body=script_data)
-                                    index_runs = ''
-                                    prev_log_obj = ''
                                     # Store in S3 bucket
                                     with open(os.path.join(base_dir, dir_root + '/' + dir_file), 'rb') as file_data:
 
@@ -94,6 +92,8 @@ class LogViewSet(viewsets.ModelViewSet):
                                         s3.Bucket('swarm-logs-bucket').put_object(Key='{}{}{}'.format(zip_root, directory+'/', dir_file), Body=file_data)
 
                                         # Parse into json
+                                        # Web parser return json objects that contain metadata for the log and run objects
+                                        # Basically only what you need to put in the database, and enough to get the files on the S3
                                         json_obj, runs_obj = parsers.web_parser(os.path.join(base_dir, dir_root + '/' + dir_file))
                                         index_json_obj = json.loads(json_obj)
                                         index_runs = json.loads(runs_obj)
@@ -111,15 +111,13 @@ class LogViewSet(viewsets.ModelViewSet):
                                         # Create the log object first, so it can be used in the run objects
                                         log_obj = Log(dateTime=date_time, deviceID=device_id, filePath=file_path)
                                         log_obj.save()
-                                        prev_log_obj = log_obj
 
-                                    # Iterate through the returned runs and store each in the DB
-                                    if index_runs != '':
+                                        # Iterate through the returned runs and store each in the DB
                                         for i in index_runs:
                                             run_id = i['run_id']
                                             run_fp = zip_root + directory+'/' + dir_file + f'-run{run_id}.json'
 
-                                            run_obj = Run(dateTime=date_time, deviceID=device_id, runID=run_id, logID=prev_log_obj, filePath=run_fp)
+                                            run_obj = Run(dateTime=date_time, deviceID=device_id, runID=run_id, logID=log_obj, filePath=run_fp)
                                             run_obj.save()
 
                                             with open(os.path.join(base_dir, dir_root + '/' + dir_file + f'-run{run_id}.json'), 'rb') as run_file:
@@ -127,7 +125,7 @@ class LogViewSet(viewsets.ModelViewSet):
 
                                     # Open and place the parsed json file in the bucket
                                     with open(os.path.join(base_dir, dir_root + '/' + dir_file + '.json'), 'rb') as json_file:
-                                        s3.Bucket('swarm-logs-bucket').put_object(Key='{}{}{}'.format(zip_root, directory + '/',json_file.name.split('/')[-1]),Body=json_file)
+                                        s3.Bucket('swarm-logs-bucket').put_object(Key='{}{}{}'.format(zip_root, directory + '/', json_file.name.split('/')[-1]),Body=json_file)
         except Exception as e:
             return Response({"Status": "Upload Failed. {}".format(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
