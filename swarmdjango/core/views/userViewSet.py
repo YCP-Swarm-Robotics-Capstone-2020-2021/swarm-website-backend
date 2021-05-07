@@ -55,11 +55,13 @@ class UserViewSet(viewsets.ModelViewSet):
         user = queryset.filter(email=email)
 
         try:
-            serializers.UserSerializer(user[0])
+            user_serialized = serializers.UserSerializer(user[0])
         except IndexError:
             return Response({"Error": "Record does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
-        return Response({"Status": True, "username": user[0].username}, status=status.HTTP_200_OK)
+        get_username = user_serialized.data.get('username')
+
+        return Response({"Status": True, "username": get_username}, status=status.HTTP_200_OK)
 
 
 
