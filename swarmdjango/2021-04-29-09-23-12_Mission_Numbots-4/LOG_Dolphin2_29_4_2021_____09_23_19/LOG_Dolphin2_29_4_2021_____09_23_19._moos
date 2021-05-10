@@ -1,0 +1,147 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% LOG FILE:       ./logs/2021-04-29-09-23-12_Mission_Numbots-4/LOG_Dolphin2_29_4_2021_____09_23_19/LOG_Dolphin2_29_4_2021_____09_23_19._moos
+%% FILE OPENED ON  Wed Dec 31 16:00:00 1969
+%% LOGSTART               1619713398.61
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ServerHost = localhost
+ServerPort = 8315
+Community  = Dolphin2
+
+ProcessConfig = ANTLER
+{
+    MSBetweenLaunches = 200
+    Run = MOOSDB    @ NewConsole = false
+    Run = ../modules/Pos_module/bin/Pos_module				@ NewConsole = false ~ Pos_module
+    Run = ../modules/VehicleStateMachine/bin/VehicleStateMachine 	@ NewConsole = false ~ VehicleStateMachine
+    Run = ../modules/MotionController/bin/MotionController 		@ NewConsole = false ~ MotionController
+    Run = ../modules/HealthManager/bin/HealthManager 			@ NewConsole = false ~ HealthManager
+    Run = ../modules/GPIOController/bin/GPIOController 			@ NewConsole = false ~ GPIOController
+    Run = uProcessWatch 						@ NewConsole = false ~ uProcessWatch
+    Run = pLogger							@ NewConsole = false ~ pLogger
+    Run = pShare							@ NewConsole = false ~ pShare
+}
+
+
+ProcessConfig = pLogger
+{
+    AppTick = 5
+    CommsTick = 5
+    File = LOG_Dolphin2
+    PATH = ./logs/2021-04-29-09-23-12_Mission_Numbots-4
+    FileTimeStamp = true
+    DoublePrecision = 3
+    CompressAlogs = false
+    MAX_DIR_SIZE = 475 //MB
+    WildCardLogging = true
+    SyncLog = false @ 1.0
+    AsyncLog = true
+
+
+    LOG = Accel @ 0.2
+    LOG = Batt_Health @ 0.2
+    LOG = Change_State @ 0.2
+    LOG = Comm_Ping @ 0.2
+    LOG = Current_Pos @ 0.2
+    LOG = id @ 1.0
+    LOG = Motor_Odom @ 0.2
+    LOG = Speed_Curv @ 0.2
+    LOG = Update_Pos @ 0.2
+    LOG = Veh_Health @ 0.2
+
+    WildCardOmitPattern = DB*
+    WildCardOmitPattern = APPCAST
+    WildCardOmitPattern = APPCAST_REQ
+    WildCardOmitPattern = *ITER_GAP
+    WildCardOmitPattern = *_ITER_LEN
+    WildCardOmitPattern = *_STATUS
+    WildCardOmitPattern = *PLOGGER*
+}
+ProcessConfig = Pos_module
+{
+   AppTick   = 4
+   CommsTick = 4
+   id = Dolphin2
+}
+ProcessConfig = pShare
+{
+     Input=route=localhost:8315
+     Output=src_name=PROC_WATCH_SUMMARY,dest_name=PROC_WATCH_DOLPHIN,route=localhost:9000
+     Output=src_name=Narwhal_Current_State,dest_name=Current_State,route=localhost:9000
+     Output=src_name=Reg_In,route=localhost:9000
+     Output=src_name=Speed_Curv,route=localhost:9000
+     Output=src_name=WCA_MESSAGE,route=localhost:9000
+     Output=src_name=VERSION_NUMBER,route=localhost:9000
+     Output=src_name=Dolphin_Done,route=localhost:9000
+     Output=src_name=Dolphin0_Neighbor_Zeta,dest_name=Neighbor_Zeta,route=localhost:8305
+     Output=src_name=Dolphin1_Neighbor_Zeta,dest_name=Neighbor_Zeta,route=localhost:8310
+     Output=src_name=Dolphin2_Neighbor_Zeta,dest_name=Neighbor_Zeta,route=localhost:8315
+     Output=src_name=Dolphin3_Neighbor_Zeta,dest_name=Neighbor_Zeta,route=localhost:8320
+}
+
+ProcessConfig = MotionController
+{
+   AppTick   = 40
+   CommsTick = 40
+   id = Dolphin2
+   kappa = 1
+   dt = 1
+   Simulation = true
+}
+
+ProcessConfig = VehicleStateMachine
+{
+   AppTick   = 1
+   CommsTick = 4
+   id = Dolphin2
+}
+ProcessConfig = uProcessWatch
+{
+    watch_all = false
+    watch = pShare,pLogger,Pos_module,VehicleStateMachine,MotionController,HealthManager,GPIOController
+}
+
+//------------------------------------------------
+// HealthManager config block
+
+ProcessConfig = HealthManager
+{
+   AppTick   = 4
+   CommsTick = 4
+   BinaryPath = ../modules
+   RunSim = true
+   VersionNum = ce42671
+   CommitMessage = Made some merge fixes   
+}
+
+
+//------------------------------------------------
+// GPIOController config block
+
+ProcessConfig = GPIOController
+{
+   AppTick   = 4
+   CommsTick = 4
+   //Arguably the most important line in the config files
+   MaxSpeed = 1.5 //Feet/second
+   WheelRadius = 1
+   p =1
+   i =1
+   d =1
+   CurrentSpeedNotifyRateS=2
+   CWBANDL = 1480
+   CWBANDH = 1280
+   CCWBANDL = 1520
+   CCWBANDH = 1720
+   READBANDL = 2.7
+   READBANDH = 97.1
+   MAXRPM = 140
+   motor = id:1, CTRLGPIO:12, READGPIO:2, SIDE:L, REVERSED:false
+   motor = id:2, CTRLGPIO:13, READGPIO:4, SIDE:L, REVERSED:false
+   motor = id:3, CTRLGPIO:19, READGPIO:6, SIDE:R, REVERSED:true
+   motor = id:4, CTRLGPIO:18, READGPIO:8, SIDE:R, REVERSED:true
+
+
+}
+
+
+

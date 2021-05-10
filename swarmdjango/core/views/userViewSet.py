@@ -63,8 +63,8 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(detail=False)
     def get_s3_keys(self, request):
         try:
-            access_key = config('S3_ACCESS')
-            secret_key = config('S3_SECRET')
+            access_key = config('AWS_ACCESS_KEY')
+            secret_key = config('AWS_SECRET_ACCESS_KEY')
             return Response({'access': access_key, 'secret': secret_key}, status=status.HTTP_200_OK)
         except UndefinedValueError:
             return Response(status=status.HTTP_418_IM_A_TEAPOT)
