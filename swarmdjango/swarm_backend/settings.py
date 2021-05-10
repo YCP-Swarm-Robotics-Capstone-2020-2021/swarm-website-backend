@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 from django.core.exceptions import ImproperlyConfigured
 from decouple import config
 from decouple import UndefinedValueError
+from datetime import timedelta
 import os
 
 # Quick-start development settings - unsuitable for production
@@ -178,12 +179,32 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "build/static")
 ]
 
-# REST_FRAMEWORK = {
-#     # Only enable JSON renderer by default.
-#     # 'DEFAULT_RENDERER_CLASSES': [
-#     #     'rest_framework.renderers.JSONRenderer',
-#     # ],
-#     'DEFAULT_PARSER_CLASSES': [
-#         'rest_framework.parsers.'
-#     ]
-# }
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+#   'DEFAULT_PARSER_CLASSES': [
+#       'rest_framework.parsers.'
+#   ]
+}
+
+AUTH_USER_MODEL = "core.User"
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=14),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': False,
+
+    'ALGORITHM': 'HS256',
+
+    'AUTH_HEADER_TYPES': ('Bearer',),
+
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type',
+
+}
