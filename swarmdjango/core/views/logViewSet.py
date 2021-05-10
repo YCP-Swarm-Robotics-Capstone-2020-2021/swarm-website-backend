@@ -74,17 +74,6 @@ class LogViewSet(viewsets.ModelViewSet):
                                 # If the file is .alog it needs to be parsed into json and stored in the db
                                 if '.alog' in dir_file:
 
-                                    # Narwhal alog needs to be parsed for visualization
-                                    # if 'Narwhal' in dir_file:
-                                    #
-                                    #     # Parse for visualization
-                                    #     parsers.visualization_parser(os.path.join(base_dir, dir_root + '/' + dir_file))
-                                    #
-                                    #     # Store visualization script in S3 bucket
-                                    #     with open(os.path.join(base_dir, dir_root + '/' + dir_file + '.script'), 'rb') as script_data:
-                                    #         # Note that the script name must be split on / to isolate just the script name and not the
-                                    #         # Directory structure
-                                    #         s3.Bucket('swarm-logs-bucket').put_object(Key='{}{}{}'.format(zip_root, directory +'/', script_data.name.split('/')[-1]), Body=script_data)
                                     # Store in S3 bucket
                                     with open(os.path.join(base_dir, dir_root + '/' + dir_file), 'rb') as file_data:
 
@@ -115,14 +104,27 @@ class LogViewSet(viewsets.ModelViewSet):
                                         # Iterate through the returned runs and store each in the DB
                                         for i in index_runs:
                                             run_id = i['run_id']
+
+                                            # This is the filepath the will be on the bucket
                                             run_fp = zip_root + directory+'/' + dir_file + f'-run{run_id}.json'
 
+                                            # Save the run data to db
                                             run_obj = Run(dateTime=date_time, deviceID=device_id, runID=run_id, logID=log_obj, filePath=run_fp)
                                             run_obj.save()
 
-                                            with open(os.path.join(base_dir, dir_root + '/' + dir_file + f'-run{run_id}.json'), 'rb') as run_file:
+                                            run_file_path = os.path.join(base_dir, dir_root + '/' + dir_file + f'-run{run_id}.json')
+
+                                            # Upload run json to bucket
+                                            with open(run_file_path, 'rb') as run_file:
                                                 s3.Bucket('swarm-logs-bucket').put_object(Key='{}{}{}'.format(zip_root, directory + '/', run_file.name.split('/')[-1]), Body=run_file)
 
+                                            # Upload the script files to the bucket
+                                            if 'Narwhal' in run_file_path:
+                                                run_script_path = run_file_path.replace('.json', '') + '.script'
+                                                with open(run_script_path, 'rb') as script_file:
+                                                    s3.Bucket('swarm-logs-bucket').put_object(Key='{}{}{}'.format(zip_root, directory + '/', script_file.name.split('/')[-1]), Body=script_file)
+                                                    script_file.seek(0)
+                                                    s3.Bucket('swarm-robotics-visualization').put_object(Key='scripts/{}{}{}'.format(zip_root, directory + '/', script_file.name.split('/')[-1]), Body=script_file)
                                     # Open and place the parsed json file in the bucket
                                     with open(os.path.join(base_dir, dir_root + '/' + dir_file + '.json'), 'rb') as json_file:
                                         s3.Bucket('swarm-logs-bucket').put_object(Key='{}{}{}'.format(zip_root, directory + '/', json_file.name.split('/')[-1]),Body=json_file)
@@ -145,5 +147,3 @@ class LogViewSet(viewsets.ModelViewSet):
                 if '__MACOSX' in directories:
                     shutil.rmtree(os.path.join(base_dir, '../__MACOSX'))
                     break
-
-
