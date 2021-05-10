@@ -11,9 +11,8 @@ from core.models import DevPersonalPage
 from core.models import Entry
 from core.models import Heading
 from core.models import Log
-from core.models import PersonalPage
-from core.models import Robot
 from core.models import Run
+from core.models import PersonalPage
 from core.models import PhotoGallery
 from core.models import SideBar
 from core.models import Sponsor
@@ -86,24 +85,17 @@ class LogSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-# PersonalPage serializer
-class PersonalPageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PersonalPage
-        fields = '__all__'
-
-
-# Robot Serializer
-class RobotSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Robot
-        fields = '__all__'
-
-
 # Run Serializer
 class RunSerializer(serializers.ModelSerializer):
     class Meta:
         model = Run
+        fields = '__all__'
+
+
+# PersonalPage serializer
+class PersonalPageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PersonalPage
         fields = '__all__'
 
 

@@ -32,6 +32,7 @@ ALLOWED_HOSTS = [
     config('ALLOWED_HOST', default='0.0.0.0'),
     'localhost',
     'swarmrobotics.io',
+    'develop.swarmrobotics.io'
     'swarm-robotics-env.us-east-1.elasticbeanstalk.com'
 ]
 
@@ -41,12 +42,12 @@ CORS_ORIGIN_WHITELIST = [
     config('CORS_ORIGIN_WHITELIST', default="http://localhost:3000"),
     config('CORS_ORIGIN_WHITELIST', default="http://0.0.0.0:8000"),
     config('CORS_ORIGIN_WHITELIST', default="https://swarmrobotics.io"),
+    config('CORS_ORIGIN_WHITELIST', default="https://develop.swarmrobotics.io"),
     config('CORS_ORIGIN_WHITELIST', default="http://swarm-robotics-env.us-east-1.elasticbeanstalk.com")
 ]
 
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -108,6 +109,17 @@ try:
                 'PORT': config('RDS_PORT', default='5432'),
             }
         }
+    elif config('DEVELOP', cast=bool):
+        DATABASES = {
+            'default': {
+                'ENGINE': config('RDS_ENGINE', default='django.db.backends.postgresql'),
+                'NAME': config('DEV_RDS_NAME', default='swarm'),
+                'USER': config('DEV_RDS_USER', default='admin'),
+                'PASSWORD': config('DEV_RDS_PASSWORD', default='DB_PASSWORD'),
+                'HOST': config('DEV_RDS_HOST', default='swarmpostgres'),
+                'PORT': config('RDS_PORT', default='5432'),
+            }
+        }
     else:
         raise UndefinedValueError
 except UndefinedValueError:
@@ -166,10 +178,12 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "build/static")
 ]
 
-# This disables the browsable aspect of the api
 # REST_FRAMEWORK = {
 #     # Only enable JSON renderer by default.
-#     'DEFAULT_RENDERER_CLASSES': [
-#         'rest_framework.renderers.JSONRenderer',
-#     ],
+#     # 'DEFAULT_RENDERER_CLASSES': [
+#     #     'rest_framework.renderers.JSONRenderer',
+#     # ],
+#     'DEFAULT_PARSER_CLASSES': [
+#         'rest_framework.parsers.'
+#     ]
 # }
