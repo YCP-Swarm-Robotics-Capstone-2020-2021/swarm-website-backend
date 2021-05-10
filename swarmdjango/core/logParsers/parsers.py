@@ -140,7 +140,7 @@ def web_parser(file_path):
         del parsed['log_content']
     except KeyError:
         print('Error removing log_content from dict')
-    print(json.dumps(parsed))
+    # print(json.dumps(parsed))
 
     for run in runs:
         run_key = run['run_id']
@@ -151,13 +151,13 @@ def web_parser(file_path):
             file.write(json.dumps(run))
         # If it's a Narwhal log file, run it through the visualization parser
         if "Narwhal" in log_type:
-            visualization_parser(run, run_name.replace(".alog", "") + ".script")
+            visualization_parser(run, run_name + ".script")
         # Delete the run_content from the dictionary to do some memory cleanup
         try:
             del run['run_content']
         except KeyError:
             print('Error removing run_content from dict')
-        print(json.dumps(run))
+        # print(json.dumps(run))
     return json.dumps(parsed), json.dumps(runs)
 
 
