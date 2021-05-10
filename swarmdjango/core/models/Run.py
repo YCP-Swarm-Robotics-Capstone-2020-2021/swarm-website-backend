@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.postgres.fields import JSONField
 from core.models import Log
 
 
@@ -8,4 +7,4 @@ class Run(models.Model):
     deviceID = models.TextField(default='NotSet')
     runID = models.IntegerField(default='NotSet')
     logID = models.ForeignKey(Log, on_delete=models.CASCADE)
-    run = JSONField()
+    filePath = models.TextField(default='NotSet')
