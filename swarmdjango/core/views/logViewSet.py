@@ -14,6 +14,7 @@ from zipfile import ZipFile
 from decouple import config
 import os
 import shutil
+import gc
 import boto3
 
 
@@ -45,75 +46,90 @@ class LogViewSet(viewsets.ModelViewSet):
                     destination.write(chunk)
 
             # Open and begin processing the uploaded files
-                with ZipFile('upload.zip', 'r') as upload:
+            with ZipFile('upload.zip', 'r') as upload:
 
-                    # Extract the zip file to access the files
-                    upload.extractall()
+                # Extract the zip file to access the files
+                upload.extractall()
 
-                    # The log files will be under a common 'root' directory
-                    zip_root = upload.namelist()[0]
+                # The log files will be under a common 'root' directory
+                zip_root = upload.namelist()[0]
 
-                    # Walk through the upper most directory
-                    for root, directories, files in os.walk(os.path.join(base_dir, '../' + zip_root)):
+                # Walk through the upper most directory
+                for root, directories, files in os.walk(os.path.join(base_dir, '../' + zip_root)):
+                    for directory in directories:
+                        # At this point, dir_root contains the path of zip root and directory
+                        for dir_root, dirs, dir_files in os.walk(os.path.join(base_dir, '../' + zip_root + directory)):
+                            # Iterate through each file in the zip files
+                            for dir_file in dir_files:
+                                # We are only interested in processing and storing the moos, alog, and script files
+                                # We want to store raw versions of these types of files in the S3 bucket
 
-                        # Iterate through each file in the zip files
-                        for file in files:
+                                if '._moos' in dir_file:
+                                    # Store raw file in S3
+                                    # Open the file as binary data
+                                    with open(os.path.join(base_dir, dir_root + '/' + dir_file), 'rb') as file_data:
+                                        # Place the file in the bucket
+                                        s3.Bucket('swarm-logs-bucket').put_object(Key='{}{}{}'.format(zip_root, directory+'/', dir_file), Body=file_data)
 
-                            # We are only interested in processing and storing the moos, alog, and script files
-                            # We want to store raw versions of these types of files in the S3 bucket
-                            if '._moos' in file:
-                                # Store raw file in S3
-                                # Open the file as binary data
-                                file_data = open(root + '/' + file, 'rb')
-                                # Place the file in the bucket
-                                s3.Bucket('swarm-logs-bucket').put_object(Key='{}{}'.format(zip_root, file), Body=file_data)
+                                # If the file is .alog it needs to be parsed into json and stored in the db
+                                if '.alog' in dir_file:
 
-                            # If the file is .alog it needs to be parsed into json and stored in the db
-                            elif '.alog' in file:
+                                    # Store in S3 bucket
+                                    with open(os.path.join(base_dir, dir_root + '/' + dir_file), 'rb') as file_data:
 
-                                # Narwhal alog needs to be parsed for visualization
-                                if 'Narwhal' in file:
+                                        # Place the un-parsed file in the bucket
+                                        s3.Bucket('swarm-logs-bucket').put_object(Key='{}{}{}'.format(zip_root, directory+'/', dir_file), Body=file_data)
 
-                                    # Parse for visualization
-                                    parsers.visualization_parser(os.path.join(root + '/', file))
+                                        # Parse into json
+                                        # Web parser return json objects that contain metadata for the log and run objects
+                                        # Basically only what you need to put in the database, and enough to get the files on the S3
+                                        json_obj, runs_obj = parsers.web_parser(os.path.join(base_dir, dir_root + '/' + dir_file))
+                                        index_json_obj = json.loads(json_obj)
+                                        index_runs = json.loads(runs_obj)
 
-                                    # Store visualization script in S3 bucket
-                                    script_data = open(root + '/' + file + '.script', 'rb')
+                                        # Create pieces of objects to store them in the DB
+                                        device_id = index_json_obj['device_id']
+                                        file_path = zip_root + directory + '/' + dir_file + '.json'
+                                        # print(file_path)
+                                        date = index_json_obj['date']
+                                        time = index_json_obj['time']
 
-                                    # Note that the script name must be split on / to isolate just the script name and not the
-                                    # Directory structure
-                                    s3.Bucket('swarm-logs-bucket').put_object(Key='{}{}'.format(zip_root, script_data.name.split('/')[-1]), Body=script_data)
+                                        # TODO specify timezone
+                                        date_time = datetime.strptime(date + ' ' + time, '%d-%m-%Y %H:%M:%S')
 
-                                # Store in S3 bucket
-                                file_data = open(root + '/' + file, 'rb')
+                                        # Create the log object first, so it can be used in the run objects
+                                        log_obj = Log(dateTime=date_time, deviceID=device_id, filePath=file_path)
+                                        log_obj.save()
 
-                                # Place the file in the bucket
-                                s3.Bucket('swarm-logs-bucket').put_object(Key='{}{}'.format(zip_root, file), Body=file_data)
+                                        # Iterate through the returned runs and store each in the DB
+                                        for i in index_runs:
+                                            run_id = i['run_id']
 
-                                # Parse into json
-                                json_obj, runs_obj = parsers.web_parser(os.path.join(root + '/', file))
-                                index_json_obj = json.loads(json_obj)
-                                index_runs = json.loads(runs_obj)
+                                            # This is the filepath the will be on the bucket
+                                            run_fp = zip_root + directory+'/' + dir_file + f'-run{run_id}.json'
 
-                                # Create pieces of objects to store them in the DB
-                                device_id = index_json_obj['device_id']
-                                file_path = zip_root + file
-                                date = index_json_obj['date']
-                                time = index_json_obj['time']
-                                date_time = datetime.strptime(date + ' ' + time, '%d-%m-%Y %H:%M:%S')
+                                            # Save the run data to db
+                                            run_obj = Run(dateTime=date_time, deviceID=device_id, runID=run_id, logID=log_obj, filePath=run_fp)
+                                            run_obj.save()
 
-                                # Create the log object first, so it can be used in the run objects
-                                log_obj = Log(dateTime=date_time, deviceID=device_id, filePath=file_path, log=index_json_obj)
-                                log_obj.save()
+                                            run_file_path = os.path.join(base_dir, dir_root + '/' + dir_file + f'-run{run_id}.json')
 
-                                # Iterate through the returned runs and store each in the DB
-                                if len(index_runs) > 0:
-                                    for i in index_runs:
-                                        run_id = list(i.keys())[0]
-                                        run_obj = Run(dateTime=date_time, deviceID=device_id, runID=run_id, logID=log_obj, run=i[run_id]['run_content'])
-                                        run_obj.save()
-        except Exception:
-            return Response({"Status": "Upload Failed."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                                            # Upload run json to bucket
+                                            with open(run_file_path, 'rb') as run_file:
+                                                s3.Bucket('swarm-logs-bucket').put_object(Key='{}{}{}'.format(zip_root, directory + '/', run_file.name.split('/')[-1]), Body=run_file)
+
+                                            # Upload the script files to the bucket
+                                            if 'Narwhal' in run_file_path:
+                                                run_script_path = run_file_path.replace('.json', '') + '.script'
+                                                with open(run_script_path, 'rb') as script_file:
+                                                    s3.Bucket('swarm-logs-bucket').put_object(Key='{}{}{}'.format(zip_root, directory + '/', script_file.name.split('/')[-1]), Body=script_file)
+                                                    script_file.seek(0)
+                                                    s3.Bucket('swarm-robotics-visualization').put_object(Key='scripts/{}{}{}'.format(zip_root, directory + '/', script_file.name.split('/')[-1]), Body=script_file)
+                                    # Open and place the parsed json file in the bucket
+                                    with open(os.path.join(base_dir, dir_root + '/' + dir_file + '.json'), 'rb') as json_file:
+                                        s3.Bucket('swarm-logs-bucket').put_object(Key='{}{}{}'.format(zip_root, directory + '/', json_file.name.split('/')[-1]),Body=json_file)
+        except Exception as e:
+            return Response({"Status": "Upload Failed. {}".format(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
             # Return the 200 response
             return Response({"Status": "Uploaded Successfully."}, status=status.HTTP_200_OK)
@@ -131,17 +147,3 @@ class LogViewSet(viewsets.ModelViewSet):
                 if '__MACOSX' in directories:
                     shutil.rmtree(os.path.join(base_dir, '../__MACOSX'))
                     break
-
-    @action(methods=['get'], detail=False)
-    def get_log_json(self, request):
-        queryset = Log.objects.all()
-        log_id = request.query_params.get('id')
-        try:
-            log_obj = queryset.filter(id=log_id)[0]
-            serialized_log = serializers.LogSerializer(log_obj, fields=('id', 'dateTime', 'deviceID', 'filePath', 'log'))
-        except IndexError:
-            return Response({"Error": "Record does not exist"}, status=status.HTTP_404_NOT_FOUND)
-        else:
-            return Response({"Success": serialized_log.data}, status=status.HTTP_200_OK)
-
-

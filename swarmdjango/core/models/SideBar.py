@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.postgres.fields import JSONField
+from django.db.models import JSONField
 
 class SideBar(models.Model):
     content = JSONField(blank=True, null=True)

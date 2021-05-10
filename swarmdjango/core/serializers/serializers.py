@@ -78,63 +78,18 @@ class HeadingSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class DynamicLogSerializer(serializers.ModelSerializer):
-    """
-    A ModelSerializer that takes an additional `fields` argument that
-    controls which fields should be displayed.
-    """
-
-    def __init__(self, *args, **kwargs):
-        # Don't pass the 'fields' arg up to the superclass
-        fields = kwargs.pop('fields', None)
-
-        # Instantiate the superclass normally
-        super(DynamicLogSerializer, self).__init__(*args, **kwargs)
-
-        # If there a specified fields
-        if fields is not None:
-            # If log is present in the fields
-            if 'log' in fields:
-                # Create and add a new json field field to the dict of fields
-                self.fields['log'] = serializers.JSONField(label='log', read_only=True, required=False)
-
-
 # Log Serializer
-class LogSerializer(DynamicLogSerializer):
+class LogSerializer(serializers.ModelSerializer):
     class Meta:
         model = Log
-        # JSON is by default excluded and must be specifically requested
-        fields = ['id', 'dateTime', 'deviceID', 'filePath']
-
-
-class DynamicRunSerializer(serializers.ModelSerializer):
-    """
-    A ModelSerializer that takes an additional `fields` argument that
-    controls which fields should be displayed.
-    """
-
-    def __init__(self, *args, **kwargs):
-        from django.contrib.postgres.fields import JSONField
-        # Don't pass the 'fields' arg up to the superclass
-        fields = kwargs.pop('fields', None)
-
-        # Instantiate the superclass normally
-        super(DynamicRunSerializer, self).__init__(*args, **kwargs)
-
-        # If there a specified fields
-        if fields is not None:
-            # If log is present in the fields
-            if 'run' in fields:
-                # Create and add a new json field field to the dict of fields
-                self.fields['run'] = serializers.JSONField(label='run', read_only=True, required=False)
+        fields = '__all__'
 
 
 # Run Serializer
-class RunSerializer(DynamicRunSerializer):
+class RunSerializer(serializers.ModelSerializer):
     class Meta:
         model = Run
-        # JSON is by default excluded and must be specifically requested
-        fields = ['id', 'dateTime', 'deviceID', 'runID', 'logID']
+        fields = '__all__'
 
 
 # PersonalPage serializer
